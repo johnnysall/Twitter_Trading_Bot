@@ -1,7 +1,6 @@
 import tkinter
 from tkinter import *
 import tweepy
-from Credentials import *
 
 API_KEY = '1ERko18WmPT8CrcvtR14WImpm'
 API_SECRET_KEY = 'aCQ8j5mc4lvOOmVZSqvHCD6X1fANQxzim23lz2lVuzFOYqIlCE'
@@ -32,6 +31,3 @@ for info in tweets[:10]:
     print("\n")
 
 window.mainloop()
-
-#TESTING GITHUB
-print("Hello Github")
