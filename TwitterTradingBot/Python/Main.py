@@ -8,7 +8,9 @@ import pandas as pd
 import datetime
 
 # Configuring Eel ----------------------------------
-eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+# Comment out first one when on PC, Comment Second when on Laptop
+#eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
 
 # Configuring Alpaca API ---------------------------
 Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
@@ -54,7 +56,7 @@ def FindOrdersPY():
     OrderList = []
 
     ClosedOrders = Alpaca_API.list_orders(
-        status="closed",
+        status='all',
         limit=100)
 
     for info in ClosedOrders:
@@ -69,12 +71,19 @@ def FindOrdersPY():
 # Market Order sent to Alpaca API (Side = Buy/ Short/ Sell)
 @eel.expose
 def Alpaca_Order(symbol, qty, side):
-    Alpaca_API.submit_order(
-        symbol=symbol.upper(),
-        qty=qty,
-        side=side.lower(),
-        type='market',
-        time_in_force='gtc')
+    try:
+        Alpaca_API.submit_order(
+            symbol=symbol.upper(),
+            qty=qty,
+            side=side.lower(),
+            type='market',
+            time_in_force='gtc')
+        CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
+        Status = qty + " " + symbol + " " + "Bought @" + str(CurrentPrice.price) + ", Total: £" + str(int(CurrentPrice.price)*int(qty))
+    except:
+        Status = "Invalid details"
+
+    return Status
 
 # Pull Portfolio from Alpaca API -----------------------
 Portfolio = Alpaca_API.list_positions()
@@ -90,7 +99,5 @@ def GetPortfolioPY():
         PortfolioList.append(SubList)
     return PortfolioList
 
-
 # Start eel - establish connection from Python to Javascript
 eel.start('Index.html')
-#eel.start('Index.html', mode='chrome', cmdline_args=['--kiosk'])

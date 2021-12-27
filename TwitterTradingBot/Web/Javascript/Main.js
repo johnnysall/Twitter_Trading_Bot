@@ -13,7 +13,7 @@ async function getOrders() {
   let OrderArray = await eel.FindOrdersPY()()
 
   var table = document.getElementById("OrdersTBL").getElementsByTagName('tbody')[0];;
-  while (table.rows.length > 1) {
+  while (table.rows.length > 0) {
     table.deleteRow(0);
   }
   for (var i=0; i<OrderArray.length; i++) {
@@ -47,6 +47,16 @@ async function getPortfolio() {
       }
     }
   }
+}
+
+eel.expose(BuyStocks);
+async function BuyStocks() {
+  var Stock = document.getElementById("StockToBuy").value;
+  var Quantity = document.getElementById("QuantityToBuy").value;
+  var Side = document.getElementById("SideToBuy").value;
+
+  let Status = await eel.Alpaca_Order(Stock, Quantity, Side)();
+  document.getElementById("Status").innerHTML = Status;
 }
 
 /* Set the width of the side navigation to 250px */
