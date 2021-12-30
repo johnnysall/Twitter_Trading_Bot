@@ -1,7 +1,44 @@
 body {
-  background-color: rgba(204,204,204,1);
+  background-color: rgb(23, 26, 36) !important;
   background-attachment: fixed;
 }
+
+#Title {
+  text-align: center;
+  width: 100%;
+  margin: 0 0 0 -100px;
+  z-index: -1;
+}
+
+#TopLine{
+  display: flex;
+  position: relative; 
+  margin-bottom: 25px;
+  margin-top: 25px;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+::-webkit-scrollbar-track-piece  {
+background-color: rgb(23, 26, 36);
+}
+::-webkit-scrollbar-thumb:vertical {
+height: 30px;
+background-color: #cccccc;
+}
+
+#OpenMenu {
+  color: #cccccc;
+  font-size: 25px;
+  width: 100px !important;
+}
+
+#OpenMenu:hover {
+  color: #ffffff;
+}
+
 /* The side navigation menu */
 .sidenav {
   height: 100%; /* 100% Full-height */
@@ -9,11 +46,12 @@ body {
   position: fixed; /* Stay in place */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
-  left: 0;
-  background-color: rgb(31, 31, 31); /* Black*/
+  left: -10;
+  background-color: rgb(23, 26, 36); /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 60px; /* Place content 60px from the top */
+  padding-top: 50px; /* Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  border-right: 1px solid rgb(23, 26, 36);
 }
 
 /* The navigation menu links */
@@ -29,21 +67,25 @@ body {
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
   color: #ffffff;
+  text-decoration: none;
 }
 
 /* Position and style the close button (top right corner) */
 .sidenav .closebtn {
+  padding: 8px 8px 8px 8px !important; 
   position: absolute;
   top: 0;
   right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+  margin-top: 10px;
+  font-size: 35px;
 }
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
   transition: margin-left .5s;
-  padding: 20px;
+  padding: 0 50px 0 50px !important;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
@@ -54,6 +96,7 @@ body {
 
 h1 {
   text-align: center;
+  color: #cccccc !important;
 }
 
 /* All the styling for the table */
@@ -64,11 +107,11 @@ h1 {
   font-size: 0.9em;
   font-family: sans-serif;
   min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 20px #000000;
 }
 
 .styled-table thead tr {
-  background-color: rgb(31, 31, 31);
+  background-color: rgb(53, 53, 53);
   color: #cccccc;
   text-align: left;
 }
@@ -83,7 +126,11 @@ h1 {
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+  background-color: #ffffff;
+}
+
+.styled-table tbody tr:nth-of-type(odd) {
+  background-color: #f6f6f6;
 }
 
 .styled-table tbody tr:last-of-type {
@@ -104,11 +151,12 @@ h1 {
 
 .form-style-6{
 	font: 95% Arial, Helvetica, sans-serif;
+  color: #cccccc;
 	max-width: 400px;
 	margin: 10px auto;
 	padding: 16px;
 	background: #F7F7F7;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 20px #000000;
 }
 .form-style-6 h1{
 	background: rgb(53, 53, 53);
@@ -116,7 +164,7 @@ h1 {
 	font-size: 140%;
 	font-weight: 300;
 	text-align: center;
-	color: #fff;
+	color: #cccccc;
 	margin: -16px -16px 16px -16px;
 }
 .form-style-6 input[type="text"],
@@ -137,13 +185,7 @@ h1 {
 	font: 95% Arial, Helvetica, sans-serif;
 }
 .form-style-6 input[type="text"]:focus,
-.form-style-6 input[type="date"]:focus,
-.form-style-6 input[type="datetime"]:focus,
-.form-style-6 input[type="email"]:focus,
 .form-style-6 input[type="number"]:focus,
-.form-style-6 input[type="search"]:focus,
-.form-style-6 input[type="time"]:focus,
-.form-style-6 input[type="url"]:focus,
 .form-style-6 textarea:focus,
 .form-style-6 select:focus
 {
@@ -176,3 +218,73 @@ h1 {
   padding: 3%;
   padding-bottom: 0%;
 }
+
+
+
+#LeftSide {
+  width: 40%;
+  float:left;
+}
+
+#RightSide {
+  width: 60%;
+  float:left;
+}
+
+ul {
+  list-style-type: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 !important;
+}
+
+#TweetList li {
+  list-style-type: none;
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid #cccccc;
+
+  /*
+  background:
+    linear-gradient(to right, white 1px, transparent 1px) 0 0,
+    linear-gradient(to right, white 1px, transparent 1px) 0 100%,
+    linear-gradient(to left, white 1px, transparent 1px) 100% 0,
+    linear-gradient(to left, white 1px, transparent 1px) 100% 100%,
+    linear-gradient(to bottom, white 1px, transparent 1px) 0 0,
+    linear-gradient(to bottom, white 1px, transparent 1px) 100% 0,
+    linear-gradient(to top, white 1px, transparent 1px) 0 100%,
+    linear-gradient(to top, white 1px, transparent 1px) 100% 100%;
+
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  */
+}
+
+#TweetList li:last-child {
+  border: none;
+}
+
+#formUsername{
+  text-decoration: none;
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  font-weight: bold;
+  color: #cccccc;
+  display: block;
+  margin-left: 2.5%;
+  text-align: left;
+}
+
+#formTweet {
+  text-decoration: none;
+  font: 200 15px/1.5 Helvetica, Verdana, sans-serif;
+  color: #cccccc;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+#TweetList li:hover {
+  background: rgb(33, 37, 51);
+}
+

@@ -24,15 +24,25 @@
         <a href='Automatic.html'>Automatic</a>
     </div>
       
-      <!-- Use any element to open the sidenav -->
-    <span onclick="openNav()">open</span>
-      
-      <!-- Everything that isnt the sidebar goes here-->
+    <!-- Everything that isnt the sidebar goes here-->
     <div id="main">
-        <h1>Home</h1>
-        <button onclick="getTweets()">Refresh Tweets</button>
-        <!-- Div for the tweets to go into -->
-        <div id="Tweets"></div>
+        <div id="TopLine">
+            <span id="OpenMenu" onclick="openNav()">&#9776; Menu</span>
+            <h1 id="Title">Tweets</h1>
+        </div>
+
+        <div id="LeftSide">
+            <p>Left Side</p>
+        </div>
+
+        <div id="RightSide">
+            <button type="button" onclick="getTweets()" class="button-84">
+                <span class="glyphicon glyphicon-refresh"></span> Refresh
+            </button>
+    
+            <!-- Div for the tweets to go into -->
+            <ul id="TweetList"></ul>
+        </div>
     </div>
 </body>
 </html>

@@ -1,13 +1,40 @@
 async function getTweets() {
     let TweetArray = await eel.FindTweetsPY()()
-    Tweets.innerHTML = "";
-    for (var i=0; i<TweetArray.length; i++) {
-        var newTweetForm = document.createElement("P");
+    TweetList.innerHTML = "";
+    for (var i=0; i<TweetArray.length; i+=2) {
+        var newTweetForm = document.createElement("LI");
         newTweetForm.id = "form"+i;
-        newTweetForm.innerText = TweetArray[i];
-        document.getElementById("Tweets").appendChild(newTweetForm);
+        document.getElementById("TweetList").appendChild(newTweetForm);
+
+        var newTweetLinkUsername = document.createElement("a");
+        newTweetLinkUsername.id = "form"+"Username";
+        newTweetLinkUsername.innerHTML = TweetArray[i];
+        document.getElementById("form"+i).appendChild(newTweetLinkUsername);
+
+        var newTweetLinkTweet = document.createElement("a");
+        newTweetLinkTweet.id = "form"+"Tweet";
+        newTweetLinkTweet.innerHTML = TweetArray[i+1];
+        document.getElementById("form"+i).appendChild(newTweetLinkTweet);
     }
 }
+
+
+async function getTweets2() {
+  let TweetArray = await eel.StartTweetListener()()
+  Tweets.innerHTML = "";
+  var newTweetForm = document.createElement("P");
+  newTweetForm.id = "form"+i;
+  newTweetForm.innerText = TweetArray[i];
+  document.getElementById("Tweets").appendChild(newTweetForm);
+}
+
+
+function getTweet(Tweet) {
+  var newTweetForm = document.createElement("P");
+  newTweetForm.innerText = Tweet;
+  document.getElementById("Tweets").appendChild(Tweet);
+}
+
 
 async function getOrders() {
   let OrderArray = await eel.FindOrdersPY()()
@@ -24,6 +51,7 @@ async function getOrders() {
     }
   }
 }
+
 
 async function getPortfolio() {
   let PortfolioArray = await eel.GetPortfolioPY()()
@@ -49,6 +77,7 @@ async function getPortfolio() {
   }
 }
 
+
 eel.expose(BuyStocks);
 async function BuyStocks() {
   var Stock = document.getElementById("StockToBuy").value;
@@ -59,14 +88,18 @@ async function BuyStocks() {
   document.getElementById("Status").innerHTML = Status;
 }
 
+
 /* Set the width of the side navigation to 250px */
 function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("mySidenav").style.borderColor = "#cccccc";
   document.getElementById("main").style.marginLeft = "250px";
 }
   
+
 /* Set the width of the side navigation to 0 */
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("mySidenav").style.borderColor = "rgb(23, 26, 36)";
   document.getElementById("main").style.marginLeft = "0";
 }
