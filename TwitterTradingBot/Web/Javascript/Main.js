@@ -19,23 +19,6 @@ async function getTweets() {
 }
 
 
-async function getTweets2() {
-  let TweetArray = await eel.StartTweetListener()()
-  Tweets.innerHTML = "";
-  var newTweetForm = document.createElement("P");
-  newTweetForm.id = "form"+i;
-  newTweetForm.innerText = TweetArray[i];
-  document.getElementById("Tweets").appendChild(newTweetForm);
-}
-
-
-function getTweet(Tweet) {
-  var newTweetForm = document.createElement("P");
-  newTweetForm.innerText = Tweet;
-  document.getElementById("Tweets").appendChild(Tweet);
-}
-
-
 async function getOrders() {
   let OrderArray = await eel.FindOrdersPY()()
 
@@ -78,6 +61,13 @@ async function getPortfolio() {
 }
 
 
+async function GetPortfolioPL() {
+  let PortfolioPL = await eel.GetAccount()()
+  
+  document.getElementById("PortfolioPL").innerText = PortfolioPL;
+}
+
+
 eel.expose(BuyStocks);
 async function BuyStocks() {
   var Stock = document.getElementById("StockToBuy").value;
@@ -92,7 +82,6 @@ async function BuyStocks() {
 /* Set the width of the side navigation to 250px */
 function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
-  document.getElementById("mySidenav").style.borderColor = "#cccccc";
   document.getElementById("main").style.marginLeft = "250px";
 }
   
@@ -100,6 +89,11 @@ function openNav() {
 /* Set the width of the side navigation to 0 */
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
-  document.getElementById("mySidenav").style.borderColor = "rgb(23, 26, 36)";
   document.getElementById("main").style.marginLeft = "0";
 }
+
+// async function GetPrice() {
+//   let n = await eel.StockPrice()();
+//   console.log('Got this from Python: ' + n);
+//   document.getElementById('TESTING').innerText = n;
+// }

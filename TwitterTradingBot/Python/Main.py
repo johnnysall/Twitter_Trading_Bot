@@ -8,6 +8,11 @@ from Credentials import *
 import eel
 import pandas as pd
 import datetime
+import threading
+from alpaca_trade_api.stream import Stream
+import asyncio
+from flask import Flask
+from flask import render_template
 
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
@@ -23,11 +28,9 @@ Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
 Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
 Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
 
-
 # Function to add Tweets to list ------------------
 @eel.expose
 def FindTweetsPY():
-    print("IT WORKED")
     # Find Tweets by "userID" ----------------------------
     userID = "MrZackMorris"
     tweets = Twitter_API.user_timeline(screen_name=userID, 
@@ -94,5 +97,50 @@ def GetPortfolioPY():
         PortfolioList.append(SubList)
     return PortfolioList
 
-# Start eel - establish connection from Python to Javascript
-eel.start('Index.html')
+@eel.expose
+def GetAccount():
+    # Get account info
+    account = Alpaca_API.get_account()
+
+    # Check our current balance vs. our balance at the last market close
+    balance_change = float(account.equity) - float(account.last_equity)
+
+    return balance_change
+
+
+# WebSockets-------------------------------------------
+app = Flask(__name__, template_folder="../Web")
+
+@eel.expose
+async def trade_callback(t):
+    print('trade', t)
+    
+
+
+# Initiate Class Instance
+stream = Stream(Alpaca_API_Key,
+                Alpaca_Secret_Key,
+                base_url=('https://paper-api.alpaca.markets'),
+                data_feed='iex')  # <- replace to SIP if you have PRO subscription
+
+
+@eel.expose
+def StartWebSocket():
+    print("HELLO")
+    # subscribing to event
+    stream.subscribe_trades(trade_callback, 'AAPL')
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    stream.run()
+
+
+def StartApp():
+    #print("HEllooooo")
+    eel.start('Index.html')
+
+t1 = threading.Thread(target = StartWebSocket, args=())
+t1.start() 
+StartApp()
+t1.join()
+
+
+
