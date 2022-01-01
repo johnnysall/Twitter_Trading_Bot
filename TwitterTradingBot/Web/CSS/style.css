@@ -106,12 +106,11 @@ background-color: #cccccc;
   border-collapse: collapse;
   min-width: 400px;
   width: 100%;
-  box-shadow: 0 0 20px #000000;
 }
 
 .styled-table thead tr { 
   width: 100%;
-	background: rgb(27, 27, 27);
+	background: none;
 	font-size: 17.5px !important;
 	font-weight: 300 !important;
 	text-align: center;
@@ -128,34 +127,26 @@ th {
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
+    color: #cccccc;
+    height: 20px;
 }
 
 .styled-table tbody tr {
-  border-bottom: thin solid #dddddd;
-}
-
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #ffffff;
-}
-
-.styled-table tbody tr:nth-of-type(odd) {
-  background-color: #f6f6f6;
-}
-
-.styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid rgb(27, 27, 27);
+  border-bottom: 1px solid rgb(27, 27, 27);
+  background: rgb(44, 44, 44);
 }
 
 .styled-table tbody tr:hover {
-  background-color: rgb(185, 185, 185);
-}
-
-.styled-table tbody tr.active-row {
-  font-weight: bold;
-  color: #009879;
+  border-bottom: 1px solid rgb(0, 195, 255);
 }
 
 
+#PortfolioSection,
+#OrdersSection {
+  width: 80%;
+  margin: 0 auto;
+  display: block;
+}
 
 
 .form-style-6{
@@ -164,12 +155,10 @@ th {
 	margin-left: auto;
   margin-right: auto;
   width: 100%;
-	background: #F7F7F7;
-  box-shadow: 0 0 20px #000000;
+	background: none;
 }
 .form-style-6 h1{
   width: 100%;
-	background: rgb(27, 27, 27);
 	font-size: 17.5px;
 	font-weight: 300;
 	text-align: center;
@@ -177,6 +166,7 @@ th {
   margin-top: 0% !important;
   padding: 15px 0;
 }
+
 .form-style-6 input[type="text"],
 .form-style-6 input[type="number"],
 .form-style-6 textarea,
@@ -186,42 +176,59 @@ th {
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 75%;
-	background: #fff;
-	border: 1px solid #ccc;
-	padding: 3%;
-  margin: 15px 12.5%;
-	color: #555;
+	width: 35%;
+  height: 50px;
+  padding-left: 2%;
+	background: rgb(44, 44, 44);
+  margin: 0.7% 32.5%;
+	color: #ccc;
 	font: 95% Arial, Helvetica, sans-serif;
+  border-style: none;
 }
 .form-style-6 input[type="text"]:focus,
 .form-style-6 input[type="number"]:focus,
 .form-style-6 textarea:focus,
 .form-style-6 select:focus
 {
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-	padding: 3%;
-	border: 1px solid rgb(27, 27, 27);
+	border-bottom: 1px solid rgb(0, 195, 255);
 }
 
-.form-style-6 input[type="submit"],
-.form-style-6 input[type="button"]{
-	box-sizing: border-box;
+input[type="submit"],
+input[type="button"]{
+  box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 75%;
-	padding: 3%;
-  margin: 15px 12.5%;
-	background: rgb(80, 80, 80);
-	border-bottom: 2px solid rgb(27, 27, 27);
-	border-top-style: none;
-	border-right-style: none;
-	border-left-style: none;	
-	color: #fff;
+  text-align: center;
+  border: 1px solid rgb(0, 195, 255);
+  border-radius: 5px;
+	color: #ccc;
+  cursor: pointer;
+  background: none;
 }
-.form-style-6 input[type="submit"]:hover,
-.form-style-6 input[type="button"]:hover{
-	background: rgb(27, 27, 27);
+
+#Refreshbtn {
+  display:block;
+  width: 100px;
+  height: 30px;
+  margin: 0.7% auto;
+}
+
+.form-style-6 input[type="submit"]{
+	width: 15%;
+  height: 50px;
+  margin: 0.7% 42.5%;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover{
+	background: rgb(0, 195, 255);
+  color: rgb(27, 27, 27);
+}
+
+input[type="submit"]:active,
+input[type="button"]:active{
+  transform: scale(0.98);
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
 }
 
 .form-style-6 p {
@@ -255,21 +262,6 @@ ul {
   width: 100%;
   padding: 10px;
   border-bottom: 1px solid #cccccc;
-
-  /*
-  background:
-    linear-gradient(to right, white 1px, transparent 1px) 0 0,
-    linear-gradient(to right, white 1px, transparent 1px) 0 100%,
-    linear-gradient(to left, white 1px, transparent 1px) 100% 0,
-    linear-gradient(to left, white 1px, transparent 1px) 100% 100%,
-    linear-gradient(to bottom, white 1px, transparent 1px) 0 0,
-    linear-gradient(to bottom, white 1px, transparent 1px) 100% 0,
-    linear-gradient(to top, white 1px, transparent 1px) 0 100%,
-    linear-gradient(to top, white 1px, transparent 1px) 100% 100%;
-
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  */
 }
 
 #TweetList li:last-child {

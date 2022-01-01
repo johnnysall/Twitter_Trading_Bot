@@ -19,7 +19,7 @@
     onclick="closeNav()">&times;</a>
         <a href='../Index.html'>Home</a>
         <a href='Portfolio.html'>Portfolio</a>
-        <a href='BuyStocks.html'>Buy Stocks</a>
+        <a href='BuyStocks.html'>Market Orders</a>
         <a href='History.html'>History</a>
         <a href='Tweets.html'>Tweets</a>
         <a href='Automatic.html'>Automatic</a>
@@ -28,22 +28,11 @@
       <!-- Everything that isnt the sidebar goes here-->
     <div id="main">
         <div id="TopLine">
-            <span id="OpenMenu" onclick="openNav()">&#9776; Menu</span>
+            <span id="OpenMenu" onclick="openNav()">&#9776;</span>
             <h1 id="Title">Portfolio</h1>
         </div>
         
-        <div id="LeftSide">
-            <div class="form-style-6">
-                <h1>Stock Order</h1>
-                <input type="text" id="StockToBuy" placeholder="Ticker Name" />
-                <input type="number" id="QuantityToBuy" placeholder="Quantity" />
-                <input type="text" id="SideToBuy" placeholder="Side e.g. Sell/ Buy" />
-                <input type="submit" value="Submit" onclick="BuyStocks();"/>
-                <p id="Status"></p>
-            </div>
-        </div>
-        
-        <div id="RightSide">
+        <div id="PortfolioSection">
             <table id="PortfolioTBL" class="styled-table">
                 <thead>
                     <tr>
@@ -57,7 +46,7 @@
                 <tbody>
                 </tbody>
             </table>
-        </div>
+        </div>   
     </div>
 </body>
 </html>

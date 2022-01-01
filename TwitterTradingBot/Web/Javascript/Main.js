@@ -52,9 +52,9 @@ async function getPortfolio() {
       } 
       else {
         var cell = row.insertCell(x);
-        cell.innerHTML = "<button id='Sellbtn';>Sell</button>";
+        cell.innerHTML = "<input type='button' id='Sellbtn' value='Sell';>";
         var cell = row.insertCell(x);
-        cell.innerHTML = "<button id='Buybtn';>Buy</button>";
+        cell.innerHTML = "<input type='button' id='Buybtn' value='Buy';>";
       }
     }
   }

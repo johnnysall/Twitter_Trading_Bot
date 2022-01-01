@@ -74,7 +74,7 @@ def Alpaca_Order(symbol, qty, side):
             type='market',
             time_in_force='gtc')
         CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
-        Status = qty + " " + symbol.upper() + " " + "Bought @" + str(CurrentPrice.price) + ", Total: £" + str(int(CurrentPrice.price)*int(qty))
+        Status = "Order Submitted: " + side.upper() + " " + qty + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
     except:
         Status = "Invalid details"
     return Status
@@ -122,7 +122,6 @@ stream = Stream(Alpaca_API_Key,
 
 @eel.expose
 def StartWebSocket():
-    print("HELLO")
     # subscribing to event
     stream.subscribe_trades(trade_callback, 'AAPL')
     asyncio.set_event_loop(asyncio.new_event_loop())
