@@ -12,6 +12,10 @@ import threading
 from alpaca_trade_api.stream import Stream
 import asyncio
 
+
+
+#TESTING BRANCH
+
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
 eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
