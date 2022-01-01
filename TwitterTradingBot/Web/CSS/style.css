@@ -104,16 +104,25 @@ background-color: #cccccc;
   margin-left: auto;
   margin-right: auto;
   border-collapse: collapse;
-  font-size: 0.9em;
-  font-family: sans-serif;
   min-width: 400px;
+  width: 100%;
   box-shadow: 0 0 20px #000000;
 }
 
-.styled-table thead tr {
-  background-color: rgb(27, 27, 27);
-  color: #cccccc;
-  text-align: left;
+.styled-table thead tr { 
+  width: 100%;
+	background: rgb(27, 27, 27);
+	font-size: 17.5px !important;
+	font-weight: 300 !important;
+	text-align: center;
+	color: #cccccc;
+  margin-top: 0% !important;
+  padding: 15px 0;
+}
+
+th {
+  font-size: 17.5px !important;
+	font-weight: 300 !important;
 }
 
 .styled-table th,
@@ -152,20 +161,21 @@ background-color: #cccccc;
 .form-style-6{
 	font: 95% Arial, Helvetica, sans-serif;
   color: #cccccc;
-	max-width: 400px;
-	margin: 10px auto;
-	padding: 16px;
+	margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 	background: #F7F7F7;
   box-shadow: 0 0 20px #000000;
 }
 .form-style-6 h1{
+  width: 100%;
 	background: rgb(27, 27, 27);
-	padding: 20px 0;
-	font-size: 140%;
+	font-size: 17.5px;
 	font-weight: 300;
 	text-align: center;
 	color: #cccccc;
-	margin: -16px -16px 16px -16px;
+  margin-top: 0% !important;
+  padding: 15px 0;
 }
 .form-style-6 input[type="text"],
 .form-style-6 input[type="number"],
@@ -176,11 +186,11 @@ background-color: #cccccc;
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 100%;
+	width: 75%;
 	background: #fff;
-	margin-bottom: 4%;
 	border: 1px solid #ccc;
 	padding: 3%;
+  margin: 15px 12.5%;
 	color: #555;
 	font: 95% Arial, Helvetica, sans-serif;
 }
@@ -199,8 +209,9 @@ background-color: #cccccc;
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 100%;
+	width: 75%;
 	padding: 3%;
+  margin: 15px 12.5%;
 	background: rgb(80, 80, 80);
 	border-bottom: 2px solid rgb(27, 27, 27);
 	border-top-style: none;

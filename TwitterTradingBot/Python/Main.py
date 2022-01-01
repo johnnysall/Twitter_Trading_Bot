@@ -11,13 +11,11 @@ import datetime
 import threading
 from alpaca_trade_api.stream import Stream
 import asyncio
-from flask import Flask
-from flask import render_template
 
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
-#eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+#eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
 
 # Configuring Alpaca API ---------------------------
 Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
@@ -109,13 +107,11 @@ def GetAccount():
 
 
 # WebSockets-------------------------------------------
-app = Flask(__name__, template_folder="../Web")
 
 @eel.expose
 async def trade_callback(t):
     print('trade', t)
     
-
 
 # Initiate Class Instance
 stream = Stream(Alpaca_API_Key,
@@ -136,6 +132,7 @@ def StartWebSocket():
 def StartApp():
     #print("HEllooooo")
     eel.start('Index.html')
+
 
 t1 = threading.Thread(target = StartWebSocket, args=())
 t1.start() 
