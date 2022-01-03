@@ -14,8 +14,8 @@ import asyncio
 
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
-eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-#eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+#eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
 
 # Configuring Alpaca API ---------------------------
 Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
@@ -45,6 +45,9 @@ def FindTweetsPY():
         TweetList.append(info.full_text)
     return TweetList
 
+@eel.expose
+def ValidateOrder(Side, Stock, OrderAmount):
+    print(Side, Stock, OrderAmount)
 
 # Function to Add all the Orders to the list -------------
 @eel.expose
@@ -66,15 +69,16 @@ def FindOrdersPY():
 # Market Order sent to Alpaca API (Side = Buy/ Short/ Sell)
 @eel.expose
 def Alpaca_Order(symbol, qty, side):
+    print(symbol, qty, side)
     try:
-        Alpaca_API.submit_order(
-            symbol=symbol.upper(),
-            qty=qty,
-            side=side.lower(),
-            type='market',
-            time_in_force='gtc')
+        # Alpaca_API.submit_order(
+        #     symbol=symbol.upper(),
+        #     qty=int(qty),
+        #     side=side.lower(),
+        #     type='market',
+        #     time_in_force='gtc')
         CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
-        Status = "Order Submitted: " + side.upper() + " " + qty + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
+        Status = "Order Submitted: " + side.upper() + " " + str(qty) + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
     except:
         Status = "Invalid details"
     return Status
@@ -133,10 +137,10 @@ def StartApp():
     eel.start('Index.html')
 
 
-t1 = threading.Thread(target = StartWebSocket, args=())
-t1.start() 
+#t1 = threading.Thread(target = StartWebSocket, args=())
+#t1.start() 
 StartApp()
-t1.join()
+#t1.join()
 
 
 

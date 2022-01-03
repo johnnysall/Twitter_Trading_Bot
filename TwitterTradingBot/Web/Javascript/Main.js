@@ -60,10 +60,10 @@ async function getPortfolio() {
         var Buy = "buy";
 
         var cell = row.insertCell(x);
-        cell.innerHTML = '<input type="button" id="Buybtn" value="Buy" onclick="BuyStocks(\''+Buy+'\', \''+PortfolioArray[i][0]+'\');">';
+        cell.innerHTML = '<input type="button" id="Buybtn" value="Buy" onclick="ModalStockQuantity(\''+Buy+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
         
         var cell = row.insertCell(x);
-        cell.innerHTML = '<input type="button" id="Sellbtn" value="Sell" onclick="BuyStocks(\''+Sell+'\', \''+PortfolioArray[i][0]+'\');">';
+        cell.innerHTML = '<input type="button" id="Sellbtn" value="Sell" onclick="ModalStockQuantity(\''+Sell+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
       };
     };
   };
@@ -71,18 +71,6 @@ async function getPortfolio() {
 
 eel.expose(BuyStocks);
 async function BuyStocks(Side, Stock) {
-  window.location = "BuyStocks.html";
-  
-  document.getElementById("TESTINGPort").innerText = "It Worked";
-  document.getElementById("TESTINGBuyStocks").innerText = "It Worked";
-  
-  alert(Side)
-  alert(Stock)
-  document.getElementById("StockToBuy").setAttribute('value', Stock);
-  document.getElementById("SideToBuy").value = Side;
-
-  
-
   var Stock = document.getElementById("StockToBuy").value;
   var Quantity = document.getElementById("QuantityToBuy").value;
   var Side = document.getElementById("SideToBuy").value;
@@ -91,16 +79,64 @@ async function BuyStocks(Side, Stock) {
   document.getElementById("Status").innerHTML = Status;
 }
 
+function ModalStockQuantity(Side, Stock, CurrentAmount){
+  modal.style.display = "block";
+  document.getElementById("QuantityInput").value = null;
 
+  document.getElementById("TextToShow").innerText = "How many " + Stock + " would you like to " + Side + " " + CurrentAmount + ":";
+  document.getElementById("QuantitySubmitBtn").onclick = function() {EditStockQuantity(Side, Stock, CurrentAmount)};
+}
+
+async function EditStockQuantity(Side, Stock, CurrentAmount, OrderAmount){
+  OrderAmount = parseInt(document.getElementById("QuantityInput").value);
+  CurrentAmountInt = parseInt(CurrentAmount);
+
+  if (OrderAmount > 0) {
+    if (Side === "buy"){
+      let Status = await eel.Alpaca_Order(Stock, OrderAmount, Side)();
+      document.getElementById("StatusOfQuantity").innerText = Status;
+    }
+    else {
+      if (CurrentAmount >= OrderAmount) {
+        let Status = await eel.Alpaca_Order(Stock, OrderAmount, Side)();
+        document.getElementById("StatusOfQuantity").innerText = Status;
+      }
+      else {
+        document.getElementById("StatusOfQuantity").innerText = "Please enter a Valid Number";
+      }
+    }
+  }
+  else{
+    document.getElementById("StatusOfQuantity").innerText = "Please enter a Number";
+  }
+
+  
+}
+
+
+// Opening/ Closing Side Navigation Bar ------------------------
 /* Set the width of the side navigation to 250px */
 function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
   document.getElementById("main").style.marginLeft = "250px";
 }
-  
 
 /* Set the width of the side navigation to 0 */
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
   document.getElementById("main").style.marginLeft = "0";
+}
+
+
+// Modal JS -----------------------------------------------------
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementById("CloseModal");
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+  document.getElementById("StatusOfQuantity").innerText = "";
 }

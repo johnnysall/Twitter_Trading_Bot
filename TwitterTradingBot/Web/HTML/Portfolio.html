@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twitter Trading Bot</title>
     <link rel="stylesheet" href="../CSS/style.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
 </head>
 <body>
-    <script type="text/javascript" src="/eel.js"></script>
-    <script type="text/javascript" src="../Javascript/Main.js"></script>  
-    <script>window.onload = getPortfolio();</script>
-    <script>window.onload = GetPortfolioPL();</script>
+    
 
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" 
@@ -31,8 +26,6 @@
             <span id="OpenMenu" onclick="openNav()">&#9776;</span>
             <h1 id="Title">Portfolio</h1>
         </div>
-        
-        <p id="TESTINGPort">HELLOOOO Port</p>
 
         <div id="PortfolioSection">
             <table id="PortfolioTBL" class="styled-table">
@@ -41,14 +34,31 @@
                         <th>Stock</th>
                         <th>Quantity</th>
                         <th>Average Price</th>
-                        <th>Buy</th>
                         <th>Sell</th>
+                        <th>Buy</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
         </div>   
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="CloseModal" class="close">&times;</span>
+                <p id="TextToShow"></p>
+                <input type="text" placeholder="Quantity" id="QuantityInput">
+                <input type="button" value="Submit" id="QuantitySubmitBtn">
+                <p id="StatusOfQuantity"></p>
+            </div>
+        </div> 
+
     </div>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="../Javascript/Main.js"></script>  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
+    <script>window.onload = getPortfolio();</script>
 </body>
 </html>
