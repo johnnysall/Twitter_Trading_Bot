@@ -35,10 +35,15 @@ async function getOrders() {
   }
 }
 
+async function GetPortfolioPL() {
+  let PortfolioPL = await eel.GetAccount()()
+  
+  document.getElementById("PortfolioPL").innerText = PortfolioPL;
+}
 
 async function getPortfolio() {
   let PortfolioArray = await eel.GetPortfolioPY()()
-
+  
   var table = document.getElementById("PortfolioTBL").getElementsByTagName('tbody')[0];
   while (table.rows.length > 1) {
     table.deleteRow(1);
@@ -51,25 +56,33 @@ async function getPortfolio() {
         cell.innerHTML = PortfolioArray[i][x];
       } 
       else {
+        var Sell = "sell";
+        var Buy = "buy";
+
         var cell = row.insertCell(x);
-        cell.innerHTML = "<input type='button' id='Sellbtn' value='Sell';>";
+        cell.innerHTML = '<input type="button" id="Buybtn" value="Buy" onclick="BuyStocks(\''+Buy+'\', \''+PortfolioArray[i][0]+'\');">';
+        
         var cell = row.insertCell(x);
-        cell.innerHTML = "<input type='button' id='Buybtn' value='Buy';>";
-      }
-    }
-  }
-}
-
-
-async function GetPortfolioPL() {
-  let PortfolioPL = await eel.GetAccount()()
-  
-  document.getElementById("PortfolioPL").innerText = PortfolioPL;
-}
-
+        cell.innerHTML = '<input type="button" id="Sellbtn" value="Sell" onclick="BuyStocks(\''+Sell+'\', \''+PortfolioArray[i][0]+'\');">';
+      };
+    };
+  };
+};
 
 eel.expose(BuyStocks);
-async function BuyStocks() {
+async function BuyStocks(Side, Stock) {
+  window.location = "BuyStocks.html";
+  
+  document.getElementById("TESTINGPort").innerText = "It Worked";
+  document.getElementById("TESTINGBuyStocks").innerText = "It Worked";
+  
+  alert(Side)
+  alert(Stock)
+  document.getElementById("StockToBuy").setAttribute('value', Stock);
+  document.getElementById("SideToBuy").value = Side;
+
+  
+
   var Stock = document.getElementById("StockToBuy").value;
   var Quantity = document.getElementById("QuantityToBuy").value;
   var Side = document.getElementById("SideToBuy").value;
@@ -91,9 +104,3 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
   document.getElementById("main").style.marginLeft = "0";
 }
-
-// async function GetPrice() {
-//   let n = await eel.StockPrice()();
-//   console.log('Got this from Python: ' + n);
-//   document.getElementById('TESTING').innerText = n;
-// }
