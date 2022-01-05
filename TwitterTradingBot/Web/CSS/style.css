@@ -7,9 +7,19 @@ body {
   text-align: center;
   width: 100%;
   margin: 0 0 0 -100px;
-  color: #cccccc !important;
+  color: #ffffff !important;
   z-index: -1;
   font-size: 30px;
+}
+
+#HomeTitle {
+  text-align: center;
+  width: 100%;
+  margin: 0 0 0 -100px;
+  color: #ffffff !important;
+  z-index: -1;
+  font-size: 50px;
+  font: helvetica !important;
 }
 
 #TopLine{
@@ -37,6 +47,7 @@ background-color: #cccccc;
   color: #cccccc;
   font-size: 25px;
   width: 100px !important;
+  margin: 0;
 }
 
 #OpenMenu:hover {
@@ -68,19 +79,31 @@ background-color: #cccccc;
 }
 
 /* When you mouse over the navigation links, change their color */
-.sidenav a:hover {
+.sidenav a:not(.closebtn):hover {
   color: #ffffff;
   text-decoration: none;
+  cursor: pointer;
+  border-left: 1px solid rgb(0, 195, 255);
+}
+
+.sidenav a.active-page {
+  border-left: 1px solid rgb(0, 195, 255);
 }
 
 /* Position and style the close button (top right corner) */
-.sidenav .closebtn {
+.closebtn {
   padding: 8px 8px 8px 8px !important; 
   position: absolute;
   top: 0;
   right: 25px;
   margin-top: 10px;
   font-size: 35px;
+}
+
+.closebtn:hover {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
@@ -148,6 +171,17 @@ th {
   display: block;
 }
 
+input[type="text"],
+input[type="number"] {
+  outline: none;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	background: rgb(44, 44, 44);
+	color: #ccc;
+	font: 95% Arial, Helvetica, sans-serif;
+  border-style: none;
+}
 
 .form-style-6{
 	font: 95% Arial, Helvetica, sans-serif;
@@ -157,6 +191,7 @@ th {
   width: 100%;
 	background: none;
 }
+
 .form-style-6 h1{
   width: 100%;
 	font-size: 17.5px;
@@ -172,24 +207,16 @@ th {
 .form-style-6 textarea,
 .form-style-6 select 
 {
-	outline: none;
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	width: 35%;
   height: 50px;
   padding-left: 2%;
-	background: rgb(44, 44, 44);
   margin: 0.7% 32.5%;
-	color: #ccc;
-	font: 95% Arial, Helvetica, sans-serif;
-  border-style: none;
 }
-.form-style-6 input[type="text"]:focus,
-.form-style-6 input[type="number"]:focus,
-.form-style-6 textarea:focus,
-.form-style-6 select:focus
-{
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
 	border-bottom: 1px solid rgb(0, 195, 255);
 }
 
@@ -296,7 +323,7 @@ ul {
 }
 
 
-
+/* Modal window CSS -----------------------------------------
  /* The Modal (background) */
  .modal {
   display: none; /* Hidden by default */
@@ -320,23 +347,6 @@ ul {
   width: 25%; /* Could be more or less, depending on screen size */
 }
 
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  display: block;
-  height: 30px;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-} 
-
 #TextToShow {
   color: #cccccc;
   margin: 10px auto;
@@ -346,6 +356,8 @@ ul {
 #QuantityInput {
   margin: 10px auto;
   display: block;
+  height: 30px;
+  padding-left: 10px;
 }
 
 #QuantitySubmitBtn {
@@ -357,4 +369,11 @@ ul {
   color: #cccccc;
   margin: 10px auto;
   display: block;
+  text-align: center;
+}
+
+
+.container {
+  width: 80%;
+  margin: 15px auto;
 }

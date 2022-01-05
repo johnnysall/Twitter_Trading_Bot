@@ -1,3 +1,5 @@
+
+
 async function getTweets() {
     let TweetArray = await eel.FindTweetsPY()()
     TweetList.innerHTML = "";
@@ -83,7 +85,7 @@ function ModalStockQuantity(Side, Stock, CurrentAmount){
   modal.style.display = "block";
   document.getElementById("QuantityInput").value = null;
 
-  document.getElementById("TextToShow").innerText = "How many " + Stock + " would you like to " + Side + " " + CurrentAmount + ":";
+  document.getElementById("TextToShow").innerText = "How many " + Stock + " would you like to " + Side + ":";
   document.getElementById("QuantitySubmitBtn").onclick = function() {EditStockQuantity(Side, Stock, CurrentAmount)};
 }
 
@@ -128,15 +130,63 @@ function closeNav() {
 }
 
 
+
 // Modal JS -----------------------------------------------------
 // Get the modal
 var modal = document.getElementById("myModal");
 
-// Get the <span> element that closes the modal
-var span = document.getElementById("CloseModal");
-
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
+function CloseModalFunc() {
   modal.style.display = "none";
   document.getElementById("StatusOfQuantity").innerText = "";
 }
+
+
+
+// To Do PIE CHARTS!!
+var canvas = document.getElementById('PortfolioPC');
+
+var data = {
+  datasets: [
+      {
+          label: "Portfolio:",
+          fill: false,
+          lineTension: 0.1,
+          backgroundColor: "rgba(75,192,192,0.4)",
+          borderColor: "rgba(75,192,192,1)",
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: 'miter',
+          pointBorderColor: "rgba(75,192,192,1)",
+          pointBackgroundColor: "#fff",
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: "rgba(75,192,192,1)",
+          pointHoverBorderColor: "rgba(220,220,220,1)",
+          pointHoverBorderWidth: 2,
+          pointRadius: 5,
+          pointHitRadius: 10,
+      }
+  ]
+};
+
+async function PortfolioPieChartfunc() {
+  let PortfolioPieChartData = await eel.GetPortfolioPY()();
+  PieChartSymbolList = [];
+  PieChartAmountList = [];
+  
+  for (var i=0; i<(PortfolioPieChartData.length); i++) {
+    PieChartSymbolList.push(PortfolioPieChartData[i][0]);
+    PieChartAmountList.push(PortfolioPieChartData[i][1]);
+  };
+
+  PortfolioPieChart.data.datasets[0].data = PieChartAmountList;
+  PortfolioPieChart.data.labels = PieChartSymbolList;
+  PortfolioPieChart.update();
+}
+
+var PortfolioPieChart = new Chart(canvas, {
+  type: 'pie',
+  data: data
+});

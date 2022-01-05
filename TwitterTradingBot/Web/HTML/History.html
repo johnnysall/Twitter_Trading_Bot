@@ -9,17 +9,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
 </head>
 <body>
-    <script type="text/javascript" src="/eel.js"></script>
-    <script type="text/javascript" src="../Javascript/Main.js"></script>  
-    <script>window.onload = getOrders();</script>
-
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" 
     onclick="closeNav()">&times;</a>
         <a href='../Index.html'>Home</a>
         <a href='Portfolio.html'>Portfolio</a>
         <a href='BuyStocks.html'>Market Orders</a>
-        <a href='History.html'>History</a>
+        <a href='History.html' class='active-page'>History</a>
         <a href='Tweets.html'>Tweets</a>
         <a href='Automatic.html'>Automatic</a>
     </div>
@@ -48,5 +44,10 @@
             </table>
         </div>
     </div>
+
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="../Javascript/Main.js"></script>  
+    <script>window.onload = getOrders();</script>
+    
 </body>
 </html>
