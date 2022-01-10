@@ -11,6 +11,11 @@ import datetime
 import threading
 from alpaca_trade_api.stream import Stream
 import asyncio
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+import re
+
+#nltk.download()
 
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
@@ -45,10 +50,6 @@ def FindTweetsPY():
         TweetList.append(info.full_text)
     return TweetList
 
-@eel.expose
-def ValidateOrder(Side, Stock, OrderAmount):
-    print(Side, Stock, OrderAmount)
-
 # Function to Add all the Orders to the list -------------
 @eel.expose
 def FindOrdersPY():
@@ -71,12 +72,12 @@ def FindOrdersPY():
 def Alpaca_Order(symbol, qty, side):
     print(symbol, qty, side)
     try:
-        # Alpaca_API.submit_order(
-        #     symbol=symbol.upper(),
-        #     qty=int(qty),
-        #     side=side.lower(),
-        #     type='market',
-        #     time_in_force='gtc')
+        Alpaca_API.submit_order(
+            symbol=symbol.upper(),
+            qty=int(qty),
+            side=side.lower(),
+            type='market',
+            time_in_force='gtc')
         CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
         Status = "Order Submitted: " + side.upper() + " " + str(qty) + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
     except:
@@ -96,22 +97,32 @@ def GetPortfolioPY():
         SubList.append(info.symbol)
         SubList.append(info.qty)
         SubList.append("{:.2f}".format(float(info.market_value)/float(info.qty)))
+        SubList.append(info.market_value)
         PortfolioList.append(SubList)
     return PortfolioList
 
 @eel.expose
-def GetAccount():
+def GetAccountData():
     # Get account info
-    account = Alpaca_API.get_account()
+    Account = Alpaca_API.get_account()
 
+    # Create list which will include all account data to then return to Javascript
+    AccountData = []
+
+    # Create variables to append to list -----------------------------------
     # Check our current balance vs. our balance at the last market close
-    balance_change = float(account.equity) - float(account.last_equity)
+    BalanceChange = float(Account.equity) - float(Account.last_equity)
 
-    return balance_change
+    AccountData.append("$" + "{:.2f}".format(BalanceChange))
+    AccountData.append("$" + "{:.2f}".format(float(Account.buying_power)))
+    AccountData.append("$" + "{:.2f}".format(float(Account.cash)))
+    AccountData.append("$" + "{:.2f}".format(float(Account.long_market_value)))
+    AccountData.append("$" + "{:.2f}".format(float(Account.equity)))
+
+    return AccountData
 
 
-# WebSockets-------------------------------------------
-
+# Alpaca API Stream -------------------------------------------
 @eel.expose
 async def trade_callback(t):
     print('trade', t)
@@ -131,16 +142,48 @@ def StartWebSocket():
     asyncio.set_event_loop(asyncio.new_event_loop())
     stream.run()
 
+# Twitter (Tweepy) API Stream -------------------------------------------
+# Subclass Stream to print IDs of Tweets received
+class TweetStreamer(tweepy.Stream):
+    global sia
+    sia = SentimentIntensityAnalyzer()
+
+    def on_status(self, status):
+        words = status.text.upper().split()
+        result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+
+        if len(result) == 1:
+            print(result[0])
+            print(sia.polarity_scores(status.text))
+
+        else:
+            print("Error")
+
+def StartTwitterStream():
+    # Initialize instance of the subclass
+    Streamer = TweetStreamer(
+    Twitter_API_Key, 
+    Twitter_Secret_API_Key,
+    Twitter_Access_Token, 
+    Twitter_Access_Token_Secret)
+
+    # Filter realtime Tweets by keyword
+    Streamer.filter(follow=["1337392050803761154"])
+
 
 def StartApp():
     #print("HEllooooo")
     eel.start('Index.html')
 
-
 #t1 = threading.Thread(target = StartWebSocket, args=())
 #t1.start() 
+
+t2 = threading.Thread(target = StartTwitterStream, args=())
+t2.start() 
+
 StartApp()
 #t1.join()
+t2.join()
 
 
 

@@ -38,9 +38,13 @@ async function getOrders() {
 }
 
 async function GetPortfolioPL() {
-  let PortfolioPL = await eel.GetAccount()()
+  let PortfolioPL = await eel.GetAccountData()()
   
-  document.getElementById("PortfolioPL").innerText = PortfolioPL;
+  document.getElementById("DayPL").innerText = PortfolioPL[0];
+  document.getElementById("BuyingPower").innerText = PortfolioPL[1];
+  document.getElementById("Cash").innerText = PortfolioPL[2];
+  document.getElementById("LongMarketValue").innerText = PortfolioPL[3];
+  document.getElementById("Equity").innerText = PortfolioPL[4];
 }
 
 async function getPortfolio() {
@@ -52,8 +56,8 @@ async function getPortfolio() {
   }
   for (var i=0; i<PortfolioArray.length; i++) {
     var row = table.insertRow();
-    for (var x=0; x<4; x++){
-      if (x<3) {
+    for (var x=0; x<5; x++){
+      if (x<4) {
         var cell = row.insertCell(x);
         cell.innerHTML = PortfolioArray[i][x];
       } 
@@ -143,50 +147,78 @@ function CloseModalFunc() {
 
 
 
-// To Do PIE CHARTS!!
-var canvas = document.getElementById('PortfolioPC');
 
-var data = {
+
+// Account Cash Pie Chart ----------------------------------------------------------
+// Portfolio Pie Chart ----------------------------------------------------------
+// Get Element to put Chart into
+var PortfolioPCCanvas = document.getElementById('PortfolioPC');
+
+// Set the data for the chart, including colours of the chart (Portfolio Chart)
+var PortfolioPCData = {
   datasets: [
       {
-          label: "Portfolio:",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(75,192,192,0.4)",
-          borderColor: "rgba(75,192,192,1)",
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: "rgba(75,192,192,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(75,192,192,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 5,
-          pointHitRadius: 10,
+        fill: false,
+        backgroundColor: "rgb(44, 44, 44)",
+        hoverBackgroundColor: "rgb(27, 27, 27)",
+        borderColor: "rgb(0, 195, 255)",
       }
   ]
 };
 
+// Get Portfolio data from python and push to Pie Chart
 async function PortfolioPieChartfunc() {
   let PortfolioPieChartData = await eel.GetPortfolioPY()();
-  PieChartSymbolList = [];
-  PieChartAmountList = [];
+  SymbolList = [];
+  AmountList = [];
   
   for (var i=0; i<(PortfolioPieChartData.length); i++) {
-    PieChartSymbolList.push(PortfolioPieChartData[i][0]);
-    PieChartAmountList.push(PortfolioPieChartData[i][1]);
+    SymbolList.push(PortfolioPieChartData[i][0]);
+    AmountList.push(PortfolioPieChartData[i][3]);
   };
 
-  PortfolioPieChart.data.datasets[0].data = PieChartAmountList;
-  PortfolioPieChart.data.labels = PieChartSymbolList;
+  PortfolioPieChart.data.datasets[0].data = AmountList;
+  PortfolioPieChart.data.labels = SymbolList;
   PortfolioPieChart.update();
 }
 
-var PortfolioPieChart = new Chart(canvas, {
+
+// Create Pie Chart for the portfolio
+var PortfolioPieChart = new Chart(PortfolioPCCanvas, {
   type: 'pie',
-  data: data
+  data: PortfolioPCData,
+  options: {
+    maintainAspectRatio: true,
+    
+    legend: {
+      labels: {
+        fontColor: "#ccc",
+        fontSize: 17.5
+      }
+    },
+
+    tooltips: {
+      enabled: true,
+      mode: 'single',
+      callbacks: {
+        title: function(tooltipItem, data) {
+          return data['labels'][tooltipItem[0]['index']];
+        },
+        label: function(tooltipItem, data) {
+          var dataset = data['datasets'][0];
+          var percent = Math.round((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100)
+          return "£" + data['datasets'][0]['data'][tooltipItem['index']] + ' (' + percent + '%)';
+        }
+      },
+      backgroundColor: "rgb(100, 100, 100)",
+      borderColor: "rgb(0, 195, 255)",
+      titleFontSize: 17.5,
+      titleFont: "Helvetica,Arial,sans-serif",
+      titleFontColor: '#ccc',
+      bodyFontColor: '#ccc',
+      bodyFont: "Helvetica,Arial,sans-serif",
+      bodyFontSize: 14,
+      displayColors: false
+    }
+  }
 });

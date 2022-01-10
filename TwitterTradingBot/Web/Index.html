@@ -27,14 +27,49 @@
       <h1 id="HomeTitle">Twitter Trading Bot</h1>
     </div>
 
-    <canvas id="PortfolioPC" width="600" height="400"></canvas>
-    <input type="button" value="Add Data" onclick="PortfolioPieChartfunc()">
+    <div id="AccountInfo">
+      <div id="AccountData">
+        <p class="ContainerTitle" id="AccountDataContainerTitle">Account Information</p>
+        <div class="DataContainer" id="DayPLContainer">
+          <span id="AccountDataTitle">Todays Profit/ Loss:</span>
+          <span class= "AccountDataText" id="DayPL"></span>
+        </div>
+  
+        <div class="DataContainer" id="BuyingPowerContainer">
+          <span id="AccountDataTitle">Buying Power:</span>
+          <span class= "AccountDataText" id="BuyingPower"></span>
+        </div>
+  
+        <div class="DataContainer" id="CashContainer">
+          <span id="AccountDataTitle">Cash:</span>
+          <span class= "AccountDataText" id="Cash"></span>
+        </div>
+  
+        <div class="DataContainer" id="LongMarketValueContainer">
+          <span id="AccountDataTitle">Long Market Value:</span>
+          <span class= "AccountDataText" id="LongMarketValue"></span>
+        </div>
+          
+        <div class="DataContainer" id="EquityContainer">
+          <span id="AccountDataTitle">Equity:</span>
+          <span class= "AccountDataText" id="Equity"></span>
+        </div>
+      </div>
+
+      <div id="AccountPieChart">
+        <canvas id="AccountCashPC" class="PieChart"></canvas>
+      </div>
+    </div>
+
+    
+
 
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <script type="text/javascript" src="/eel.js"></script>
   <script type="text/javascript" src="../Javascript/Main.js"></script>  
-  <script>window.onload = PortfolioPieChartfunc();</script>
+  <script>window.onload = GetPortfolioPL();</script>
+  <script>window.onload = AccountCashPieChartfunc();</script>
 </body>
 </html>

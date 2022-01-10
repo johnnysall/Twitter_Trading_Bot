@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twitter Trading Bot</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../CSS/style.css">
 </head>
 <body>
@@ -25,21 +26,33 @@
             <h1 id="Title">Portfolio</h1>
         </div>
 
-        <div id="PortfolioSection">
-            <table id="PortfolioTBL" class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Stock</th>
-                        <th>Quantity</th>
-                        <th>Average Price</th>
-                        <th>Sell</th>
-                        <th>Buy</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>   
+        <div id="RightSide">
+            <div id="PortfolioSection">
+                <table id="PortfolioTBL" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Stock</th>
+                            <th>Quantity</th>
+                            <th>Average Price</th>
+                            <th>Market Value</th>
+                            <th>Sell</th>
+                            <th>Buy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>   
+        </div>
+
+        <div id="LeftSide">
+            <div class="PieChartContainer">
+                <canvas id="PortfolioPC" class="PieChart"></canvas>
+            </div>
+
+            <input type="button" value="Refresh Chart" onclick="PortfolioPieChartfunc()">
+        </div>
+        
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -54,9 +67,11 @@
         </div> 
 
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="../Javascript/Main.js"></script>  
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
     <script>window.onload = getPortfolio();</script>
+    <script>window.onload = PortfolioPieChartfunc();</script>
 </body>
 </html>
