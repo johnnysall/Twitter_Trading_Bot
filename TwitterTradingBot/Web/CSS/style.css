@@ -284,7 +284,8 @@ ul {
   padding: 0 !important;
 }
 
-#TweetList li {
+#TweetList li,
+#BoughtTweetList li {
   list-style-type: none;
   position: relative;
   width: 100%;
@@ -293,7 +294,8 @@ ul {
   background-color: rgb(44, 44, 44);
 }
 
-#TweetList li:last-child {
+#TweetList li:last-child,
+#BoughtTweetList li:last-child {
   border: none;
 }
 
@@ -307,7 +309,8 @@ ul {
   text-align: left;
 }
 
-#formTweet {
+#formTweet,
+#formStockBought {
   text-decoration: none;
   font: 200 15px/1.5 Helvetica, Verdana, sans-serif;
   color: #cccccc;
@@ -315,7 +318,8 @@ ul {
   margin-left: 5%;
 }
 
-#TweetList li:hover {
+#TweetList li:hover,
+#BoughtTweetList li:hover {
   background: rgb(27, 27, 27);
   border-bottom: 1px solid rgb(0, 195, 255);
 }
@@ -419,4 +423,11 @@ ul {
 #AccountDataTitle {
   color: #ccc;
   font-size: 17.5px !important;
+}
+
+
+
+#Tweets {
+  width: 80%;
+  margin: 0% auto;
 }

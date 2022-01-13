@@ -150,15 +150,63 @@ async function StartTwitterStream() {
     };
   })
   console.log(TwitterNameList);
-  let TwitterStream = await eel.StartTwitterStream(TwitterNameList)();
+  let TwitterStream = await eel.StartTwitterStreamThread(TwitterNameList)();
 }
+
+
+
+function AddRow(Username, Tweet, StockBought, i) {
+  var newTweetForm = document.createElement("LI");
+  newTweetForm.id = "form"+i;
+  document.getElementById("BoughtTweetList").appendChild(newTweetForm);
+
+  var newUsername = document.createElement("a");
+  newUsername.id = "form"+"Username";
+  newUsername.innerHTML = "@" + Username + "Said";
+  document.getElementById("form"+i).appendChild(newUsername);
+
+  var newTweet = document.createElement("a");
+  newTweet.id = "form"+"Tweet";
+  newTweet.innerHTML = Tweet;
+  document.getElementById("form"+i).appendChild(newTweet);
+
+  var newStockBought = document.createElement("a");
+  newStockBought.id = "form"+"StockBought";
+  newStockBought.innerHTML = "Bought: " + StockBought;
+  document.getElementById("form"+i).appendChild(newStockBought);
+}
+
+eel.expose(UpdateBoughtTweets);
+function UpdateBoughtTweets() {
+  fetch('../StockTweetsBought.txt')
+  .then(response => response.text())
+  .then((data) => {
+    var lines=data.split(/\r\n/);
+    var Username = lines[(lines.length)-4];
+    var Tweet = lines[(lines.length)-3];
+    var StockBought = lines[(lines.length)-2];
+    var index = (((lines.length)-1)/3);
+
+    AddRow(Username, Tweet, StockBought, index);
+  })
+};
 
 eel.expose(ReadTextFile);
 function ReadTextFile() {
   fetch('../StockTweetsBought.txt')
   .then(response => response.text())
   .then((data) => {
-    document.getElementById("TweetsBought").innerText = data;
+    var lines=data.split(/\r\n/);
+    var IterationNum = (((lines.length)-1)/3);
+
+    for (var i=0; i<IterationNum; i++){
+      var index = (i*3);
+      var Username = lines[(lines.length)-index-4];
+      var Tweet = lines[(lines.length)-index-3];
+      var StockBought = lines[(lines.length)-index-2];
+      
+      AddRow(Username, Tweet, StockBought, i);
+    }
   })
 };
 

@@ -47,7 +47,7 @@ def FindTweetsPY():
 
     TweetList = []
     for info in tweets[:25]:
-        TweetList.append(info.user.screen_name + " Said:")
+        TweetList.append("@" + info.user.screen_name + " Said:")
         TweetList.append(info.full_text)
     return TweetList
 
@@ -72,18 +72,18 @@ def FindOrdersPY():
 @eel.expose
 def Alpaca_Order(symbol, qty, side):
     print(symbol, qty, side)
-    try:
-        Alpaca_API.submit_order(
-            symbol=symbol.upper(),
-            qty=int(qty),
-            side=side.lower(),
-            type='market',
-            time_in_force='gtc')
-        CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
-        Status = "Order Submitted: " + side.upper() + " " + str(qty) + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
-    except:
-        Status = "Invalid details"
-    return Status
+    # try:
+    #     Alpaca_API.submit_order(
+    #         symbol=symbol.upper(),
+    #         qty=int(qty),
+    #         side=side.lower(),
+    #         type='market',
+    #         time_in_force='gtc')
+    #     CurrentPrice = Alpaca_API.get_last_trade(symbol.upper())
+    #     Status = "Order Submitted: " + side.upper() + " " + str(qty) + " " + symbol.upper() + " @" + str(CurrentPrice.price) + ", Total: £" + str(float(CurrentPrice.price)*float(qty))
+    # except:
+    #     Status = "Invalid details"
+    # return Status
 
 
 # Pull Portfolio from Alpaca API -----------------------
@@ -144,34 +144,6 @@ def StartWebSocket():
     stream.run()
 
 # Twitter (Tweepy) API Stream -------------------------------------------
-# Subclass Stream to print IDs of Tweets received
-class TweetStreamer(tweepy.Stream):
-    tweepy.Cursor(Twitter_API.user_timeline, exclude_replies=True, include_rts=False)
-    global sia
-    sia = SentimentIntensityAnalyzer()
-
-    def on_status(self, status):        
-        print(status.in_reply_to_status_id)
-        print(status.text)
-        if (status.in_reply_to_status_id == None):
-            words = status.text.upper().split()
-            result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
-
-            if len(result) == 1:
-                # Create directory path to Text file which includes data
-                xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
-                with open(xpath, 'a') as f:
-                    f.write(status.text + "\n")
-                    f.write("Stock = " + result[0] + "\n")
-                    f.close()
-                # Call Javascript Function which refreshes the element to display Text from file
-                eel.ReadTextFile() 
-
-            else:
-                print("No Stock found")
-        else:
-            print("Was a reply/ RT")
-
 def GetUserID(TwitterNameList):
     TwitterIDList = []
     for name in TwitterNameList:
@@ -180,12 +152,58 @@ def GetUserID(TwitterNameList):
         # Fetching the ID
         UserID = user.id
         TwitterIDList.append(str(UserID))
-    print(TwitterIDList)
     return TwitterIDList
+
+# Subclass Stream to print IDs of Tweets received
+class TweetStreamer(tweepy.Stream):
+    global sia
+    sia = SentimentIntensityAnalyzer()
+
+    def on_status(self, status):     
+        if status.in_reply_to_status_id == None and status.in_reply_to_screen_name == None and status.is_quote_status == False and status.retweeted == False:
+            words = status.text.upper().split()
+            result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+
+            try:
+                if status.retweeted_status.id != None:
+                    print("Was a Retweet")
+            
+            except:
+                # Check Theres only one stock inluded in the tweet in question
+                if len(result) == 1:
+                    AmountNeg = sia.polarity_scores(status.text)["neg"]
+                    AmountPos = sia.polarity_scores(status.text)["pos"]
+
+                    # Only continue if vader score determines theres no negativity in tweet
+                    if AmountNeg == 0:
+                        # Only continue if vader positivity score is above certain amount
+                        if AmountPos > 0.3:
+                            # Create directory path to Text file which includes data
+                            xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
+
+                            TextToAdd = []
+                            TextToAdd.append(status.user.screen_name + "\n")
+                            TextToAdd.append(status.text + "\n")
+                            TextToAdd.append(result[0] + "\n")
+
+                            for item in TextToAdd:
+                                with open(xpath, 'a') as f:
+                                    f.write(item)
+                                    f.close()
+
+                            # Call Javascript Function which refreshes the element to display Text from file
+                            eel.UpdateBoughtTweets() 
+
+                            # Call buy function to buy the Stock Recommended
+                            Alpaca_Order(result[0], 1, "buy")
+                else:
+                    print("No Stock found")
+                    print(status)
+        else:
+            print("Was a reply/ RT")
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
-    print(TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 
@@ -197,8 +215,12 @@ def StartTwitterStream(TwitterNameList):
     Streamer.filter(follow=GetUserID(TwitterNameList))
 
 def StartApp():
-    #print("HEllooooo")
     eel.start('Index.html')
+
+@eel.expose
+def StartTwitterStreamThread(TwitterNameList):
+    t2 = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,))
+    t2.start() 
 
 #t1 = threading.Thread(target = StartWebSocket, args=())
 #t1.start() 
