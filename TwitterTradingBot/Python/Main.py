@@ -1,4 +1,5 @@
 from os import stat
+import os
 import tkinter
 from tkinter import *
 import tweepy
@@ -145,21 +146,46 @@ def StartWebSocket():
 # Twitter (Tweepy) API Stream -------------------------------------------
 # Subclass Stream to print IDs of Tweets received
 class TweetStreamer(tweepy.Stream):
+    tweepy.Cursor(Twitter_API.user_timeline, exclude_replies=True, include_rts=False)
     global sia
     sia = SentimentIntensityAnalyzer()
 
-    def on_status(self, status):
-        words = status.text.upper().split()
-        result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+    def on_status(self, status):        
+        print(status.in_reply_to_status_id)
+        print(status.text)
+        if (status.in_reply_to_status_id == None):
+            words = status.text.upper().split()
+            result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
 
-        if len(result) == 1:
-            print(result[0])
-            print(sia.polarity_scores(status.text))
+            if len(result) == 1:
+                # Create directory path to Text file which includes data
+                xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
+                with open(xpath, 'a') as f:
+                    f.write(status.text + "\n")
+                    f.write("Stock = " + result[0] + "\n")
+                    f.close()
+                # Call Javascript Function which refreshes the element to display Text from file
+                eel.ReadTextFile() 
 
+            else:
+                print("No Stock found")
         else:
-            print("Error")
+            print("Was a reply/ RT")
 
-def StartTwitterStream():
+def GetUserID(TwitterNameList):
+    TwitterIDList = []
+    for name in TwitterNameList:
+        # Fetching the user
+        user  = Twitter_API.get_user(screen_name=name)
+        # Fetching the ID
+        UserID = user.id
+        TwitterIDList.append(str(UserID))
+    print(TwitterIDList)
+    return TwitterIDList
+
+@eel.expose
+def StartTwitterStream(TwitterNameList):
+    print(TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 
@@ -168,8 +194,7 @@ def StartTwitterStream():
     Twitter_Access_Token_Secret)
 
     # Filter realtime Tweets by keyword
-    Streamer.filter(follow=["1337392050803761154"])
-
+    Streamer.filter(follow=GetUserID(TwitterNameList))
 
 def StartApp():
     #print("HEllooooo")
@@ -178,12 +203,12 @@ def StartApp():
 #t1 = threading.Thread(target = StartWebSocket, args=())
 #t1.start() 
 
-t2 = threading.Thread(target = StartTwitterStream, args=())
-t2.start() 
+#t2 = threading.Thread(target = StartTwitterStream, args=())
+#t2.start() 
 
 StartApp()
 #t1.join()
-t2.join()
+#t2.join()
 
 
 

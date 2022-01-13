@@ -27,15 +27,17 @@
             <h1 id="Title">Automatic</h1>
         </div>
 
-        <button onclick="getTweets()">Refresh Tweets</button>
+        <button onclick="ReadTextFile()">Refresh Tweets</button>
         
         <!-- Div for the tweets to go into -->
-        <div id="Tweets"></div>
+        <div id="Tweets">
+            <p id="TweetsBought">TweetsBought</p>
+            <p id="AccountsToTrack">AccountsToTrack</p>
+        </div>
     </div>
 
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="../Javascript/Main.js"></script>  
-    <script>window.onload = getTweets();</script>
-
+    <script>window.onload = ReadTextFile();</script>
 </body>
 </html>

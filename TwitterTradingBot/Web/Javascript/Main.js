@@ -1,5 +1,3 @@
-
-
 async function getTweets() {
     let TweetArray = await eel.FindTweetsPY()()
     TweetList.innerHTML = "";
@@ -115,9 +113,8 @@ async function EditStockQuantity(Side, Stock, CurrentAmount, OrderAmount){
   else{
     document.getElementById("StatusOfQuantity").innerText = "Please enter a Number";
   }
-
-  
 }
+
 
 
 // Opening/ Closing Side Navigation Bar ------------------------
@@ -135,6 +132,38 @@ function closeNav() {
 
 
 
+// Start Twitter Stream within Python ---------------------------
+async function StartTwitterStream() {
+  var TwitterNameList = [];
+  fetch('../AccountsToTrack.txt')
+  .then(response => response.text())
+  .then((data) => {
+    var lines = data.split('\n');
+    for(var line = 0; line < lines.length; line++){
+      if (lines[line].indexOf(' ') !== -1) {
+        console.log('string is empty or only contains spaces');
+      }
+      else if (lines[line].trim()) {
+        console.log(lines[line]);
+        TwitterNameList.push(lines[line]);
+      }
+    };
+  })
+  console.log(TwitterNameList);
+  let TwitterStream = await eel.StartTwitterStream(TwitterNameList)();
+}
+
+eel.expose(ReadTextFile);
+function ReadTextFile() {
+  fetch('../StockTweetsBought.txt')
+  .then(response => response.text())
+  .then((data) => {
+    document.getElementById("TweetsBought").innerText = data;
+  })
+};
+
+
+
 // Modal JS -----------------------------------------------------
 // Get the modal
 var modal = document.getElementById("myModal");
@@ -144,8 +173,6 @@ function CloseModalFunc() {
   modal.style.display = "none";
   document.getElementById("StatusOfQuantity").innerText = "";
 }
-
-
 
 
 
@@ -181,7 +208,6 @@ async function PortfolioPieChartfunc() {
   PortfolioPieChart.data.labels = SymbolList;
   PortfolioPieChart.update();
 }
-
 
 // Create Pie Chart for the portfolio
 var PortfolioPieChart = new Chart(PortfolioPCCanvas, {
