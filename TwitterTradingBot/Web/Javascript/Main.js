@@ -133,6 +133,7 @@ function closeNav() {
 
 
 // Start Twitter Stream within Python ---------------------------
+eel.expose(GetFollowers);
 function GetFollowers(Direction) {
   const TwitterNameList = [];
   fetch('../AccountsToTrack.txt')
@@ -162,11 +163,25 @@ function StartTwitterStream() {
   eel.StartTwitterStreamThread(Followers)();
 }
 
+eel.expose(DisplayFollower);
+function DisplayFollower(Follower) {
+  var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
+  var row = table.insertRow();
+
+  var cell = row.insertCell(0);
+  cell.innerHTML = Follower;
+
+  var cell = row.insertCell(1);
+  cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
+}
+
+eel.expose(DisplayFollowers);
 function DisplayFollowers(Followers) {
   var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
 
   for (var i=0; i<Followers.length; i++) {
     var row = table.insertRow();
+    row.id = Followers[i];
 
     var cell = row.insertCell(0);
     cell.innerHTML = Followers[i];
@@ -177,10 +192,22 @@ function DisplayFollowers(Followers) {
 }
 
 function DeleteFollower(Follower) {
-  console.log(Follower);
+  var row = document.getElementById(Follower);
+  row.parentNode.removeChild(row);
+
+  eel.DeleteFollower(Follower)();
 }
 
 function AddFollower(Follower) {
+  var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
+  var row = table.insertRow();
+
+  var cell = row.insertCell(0);
+  cell.innerHTML = Follower;
+
+  var cell = row.insertCell(1);
+  cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
+
   eel.AddFollower(Follower)();
 }
 

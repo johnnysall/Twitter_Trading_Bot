@@ -50,6 +50,19 @@
             <!-- List for the tweets to go into -->
             <ul id="TweetList"></ul>
         </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="CloseModal" class="closebtn" onclick="CloseModalFunc();">&times;</span>
+                <p id="TextToShow"></p>
+                <input type="text" placeholder="Quantity" id="QuantityInput">
+                <input type="button" value="Submit" id="QuantitySubmitBtn">
+                <p id="StatusOfQuantity"></p>
+            </div>
+        </div> 
+        
     </div>
 
     <script type="text/javascript" src="/eel.js"></script>

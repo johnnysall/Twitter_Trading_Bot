@@ -149,15 +149,13 @@ def StartWebSocket():
 def DeleteFollower(User):
     xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
 
-    with open(xpath) as f:
-        for line in f:
-            if line.strip("\n") == User:
-                print("ITS GONE")
-                break
-            else:
-                print("Nope")
-
-    print("Deleted", User)
+    with open(xpath, "r") as f:
+        lines = f.readlines()
+    
+    with open(xpath, "w") as f:
+        for line in lines:
+            if line.strip("\n") != User:
+                f.write(line)
 
 @eel.expose
 def AddFollower(User):
@@ -165,11 +163,20 @@ def AddFollower(User):
         Twitter_API.get_user(screen_name=User)
         xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
 
-        with open(xpath, 'a') as f:
-            f.write(User + "\n")
-            f.close()
+        with open(xpath, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.strip("\n") == User:
+                    x = 1
+                    print("You already Follow Them!")
+                    break
+            if x != 1:
+                with open(xpath, 'a') as f:
+                    f.write(User + "\n")
+                    f.close()
         
         print("Added", User)
+        eel.DisplayFollower(User)
     except:
         print(User, " Doesnt Exist")
 
@@ -235,7 +242,6 @@ class TweetStreamer(tweepy.Stream):
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
-    print(TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 
@@ -260,8 +266,6 @@ def StartTwitterStreamThread(TwitterNameList):
 #t2 = threading.Thread(target = StartTwitterStream, args=())
 #t2.start() 
 
-#StartApp()
+StartApp()
 #t1.join()
 #t2.join()
-
-DeleteFollower("TESTING")
