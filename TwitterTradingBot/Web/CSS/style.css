@@ -234,11 +234,18 @@ input[type="button"]{
   background: none;
 }
 
-#Refreshbtn {
+#Refreshbtn,
+#AddFollowerbtn {
   display:block;
   width: 100px;
   height: 30px;
   margin: 0.7% auto;
+}
+
+#RefreshButton,
+#AddFollowerbtn {
+  margin: 0 auto;
+  display: block;
 }
 
 .form-style-6 input[type="submit"]{
@@ -269,12 +276,22 @@ input[type="button"]:active{
 
 #LeftSide {
   width: 47.5%;
-  float:left;
+  margin-right: 2.5%;
+  float: left;
+  margin-bottom: 50px;
 }
 
 #RightSide {
   width: 47.5%;
-  float:right;
+  margin-left: 2.5%;
+  float: right;
+  margin-bottom: 50px;
+}
+
+@media screen and (max-width: 1200px) {
+  .WidthContainer {
+    width: 100% !important;
+  }
 }
 
 ul {
@@ -324,10 +341,6 @@ ul {
   border-bottom: 1px solid rgb(0, 195, 255);
 }
 
-#RefreshButton {
-  margin: 0 auto;
-  display: block;
-}
 
 
 /* Modal window CSS -----------------------------------------

@@ -133,8 +133,8 @@ function closeNav() {
 
 
 // Start Twitter Stream within Python ---------------------------
-async function StartTwitterStream() {
-  var TwitterNameList = [];
+function GetFollowers(Direction) {
+  const TwitterNameList = [];
   fetch('../AccountsToTrack.txt')
   .then(response => response.text())
   .then((data) => {
@@ -144,16 +144,45 @@ async function StartTwitterStream() {
         console.log('string is empty or only contains spaces');
       }
       else if (lines[line].trim()) {
-        console.log(lines[line]);
-        TwitterNameList.push(lines[line]);
+        TextToAdd = lines[line].replace(/(\r\n|\n|\r)/gm, "");
+        TwitterNameList.push(TextToAdd);
       }
     };
+    if (Direction == "DisplayFollowers") {
+      DisplayFollowers(TwitterNameList);
+    }
   })
-  console.log(TwitterNameList);
-  let TwitterStream = await eel.StartTwitterStreamThread(TwitterNameList)();
+  if (Direction == "StartTwitterStream") {
+    return TwitterNameList;
+  }
 }
 
+function StartTwitterStream() {
+  var Followers = GetFollowers("StartTwitterStream");
+  eel.StartTwitterStreamThread(Followers)();
+}
 
+function DisplayFollowers(Followers) {
+  var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
+
+  for (var i=0; i<Followers.length; i++) {
+    var row = table.insertRow();
+
+    var cell = row.insertCell(0);
+    cell.innerHTML = Followers[i];
+
+    var cell = row.insertCell(1);
+    cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Followers[i]+'\');">';
+  }
+}
+
+function DeleteFollower(Follower) {
+  console.log(Follower);
+}
+
+function AddFollower(Follower) {
+  eel.AddFollower(Follower)();
+}
 
 function AddRow(Username, Tweet, StockBought, i) {
   var newTweetForm = document.createElement("LI");

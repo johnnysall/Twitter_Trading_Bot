@@ -16,7 +16,7 @@
         <a href='BuyStocks.html'>Market Orders</a>
         <a href='History.html'>History</a>
         <a href='Tweets.html'>Tweets</a>
-        <a href='Automatic.html'>Automatic</a>
+        <a href='Automatic.html'>Automatic Bot</a>
     </div>
 
       <!-- Everything that isnt the sidebar goes here-->
@@ -26,7 +26,15 @@
             <h1 id="Title">Portfolio</h1>
         </div>
 
-        <div id="RightSide">
+        <div id="LeftSide" class="WidthContainer">
+            <div class="PieChartContainer">
+                <canvas id="PortfolioPC" class="PieChart"></canvas>
+            </div>
+
+            <input type="button" value="Refresh Chart" onclick="PortfolioPieChartfunc()">
+        </div>
+        
+        <div id="RightSide" class="WidthContainer">
             <div id="PortfolioSection">
                 <table id="PortfolioTBL" class="styled-table">
                     <thead>
@@ -44,15 +52,6 @@
                 </table>
             </div>   
         </div>
-
-        <div id="LeftSide">
-            <div class="PieChartContainer">
-                <canvas id="PortfolioPC" class="PieChart"></canvas>
-            </div>
-
-            <input type="button" value="Refresh Chart" onclick="PortfolioPieChartfunc()">
-        </div>
-        
 
         <!-- The Modal -->
         <div id="myModal" class="modal">

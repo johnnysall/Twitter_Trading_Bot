@@ -17,7 +17,7 @@
         <a href='BuyStocks.html'>Market Orders</a>
         <a href='History.html'>History</a>
         <a href='Tweets.html' class='active-page'>Tweets</a>
-        <a href='Automatic.html'>Automatic</a>
+        <a href='Automatic.html'>Automatic Bot</a>
     </div>
       
     <!-- Everything that isnt the sidebar goes here-->
@@ -27,14 +27,27 @@
             <h1 id="Title">Tweets</h1>
         </div>
 
-        <div id="LeftSide">
-            <p>Left Side</p>
+        <div id="LeftSide" class="WidthContainer">
+            <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="AddFollower('TestUser');"/>
+            <!-- Table for the Followers to go into -->
+            <div id="FollowerSection">
+                <table id="FollowerTBL" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Unfollow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div> 
         </div>
 
-        <div id="RightSide">
+        <div id="RightSide" class="WidthContainer">
             <input id="Refreshbtn" type="button" value="Refresh" onclick="getTweets();"/>
     
-            <!-- Div for the tweets to go into -->
+            <!-- List for the tweets to go into -->
             <ul id="TweetList"></ul>
         </div>
     </div>
@@ -42,5 +55,6 @@
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="../Javascript/Main.js"></script>  
     <script>window.onload = getTweets();</script>
+    <script>window.onload = GetFollowers("DisplayFollowers");</script>
 </body>
 </html>

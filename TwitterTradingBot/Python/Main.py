@@ -143,12 +143,43 @@ def StartWebSocket():
     asyncio.set_event_loop(asyncio.new_event_loop())
     stream.run()
 
+
+
+@eel.expose
+def DeleteFollower(User):
+    xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
+
+    with open(xpath) as f:
+        for line in f:
+            if line.strip("\n") == User:
+                print("ITS GONE")
+                break
+            else:
+                print("Nope")
+
+    print("Deleted", User)
+
+@eel.expose
+def AddFollower(User):
+    try:
+        Twitter_API.get_user(screen_name=User)
+        xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
+
+        with open(xpath, 'a') as f:
+            f.write(User + "\n")
+            f.close()
+        
+        print("Added", User)
+    except:
+        print(User, " Doesnt Exist")
+
+
 # Twitter (Tweepy) API Stream -------------------------------------------
 def GetUserID(TwitterNameList):
     TwitterIDList = []
     for name in TwitterNameList:
         # Fetching the user
-        user  = Twitter_API.get_user(screen_name=name)
+        user = Twitter_API.get_user(screen_name=name)
         # Fetching the ID
         UserID = user.id
         TwitterIDList.append(str(UserID))
@@ -204,6 +235,7 @@ class TweetStreamer(tweepy.Stream):
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
+    print(TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 
@@ -228,9 +260,8 @@ def StartTwitterStreamThread(TwitterNameList):
 #t2 = threading.Thread(target = StartTwitterStream, args=())
 #t2.start() 
 
-StartApp()
+#StartApp()
 #t1.join()
 #t2.join()
 
-
-
+DeleteFollower("TESTING")
