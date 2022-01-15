@@ -84,7 +84,7 @@ async function BuyStocks(Side, Stock) {
 }
 
 function ModalStockQuantity(Side, Stock, CurrentAmount){
-  modal.style.display = "block";
+  document.getElementById("PortfolioModal").style.display = "block";
   document.getElementById("QuantityInput").value = null;
 
   document.getElementById("TextToShow").innerText = "How many " + Stock + " would you like to " + Side + ":";
@@ -274,7 +274,7 @@ var modal = document.getElementById("myModal");
 
 // When the user clicks on <span> (x), close the modal
 function CloseModalFunc() {
-  modal.style.display = "none";
+  document.getElementById("PortfolioModal").style.display = "none";
   document.getElementById("StatusOfQuantity").innerText = "";
 }
 

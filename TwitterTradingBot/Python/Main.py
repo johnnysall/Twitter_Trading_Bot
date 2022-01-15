@@ -175,8 +175,8 @@ def AddFollower(User):
                     f.write(User + "\n")
                     f.close()
         
-        print("Added", User)
-        eel.DisplayFollower(User)
+                print("Added", User)
+                eel.DisplayFollower(User)
     except:
         print(User, " Doesnt Exist")
 
