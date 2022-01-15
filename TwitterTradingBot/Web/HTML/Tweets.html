@@ -28,7 +28,7 @@
         </div>
 
         <div id="LeftSide" class="WidthContainer">
-            <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="AddFollower('TestUser');"/>
+            <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="FollowerModalStockQuantity();"/>
             <!-- Table for the Followers to go into -->
             <div id="FollowerSection">
                 <table id="FollowerTBL" class="styled-table">
@@ -55,11 +55,11 @@
         <div id="FollowerModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
-                <span id="CloseModal" class="closebtn" onclick="CloseModalFunc();">&times;</span>
+                <span id="CloseModal" class="closebtn" onclick="CloseModalFunc('FollowerModal', 'StatusOfFollower');">&times;</span>
                 <p id="TextToShow"></p>
-                <input type="text" placeholder="Quantity" id="QuantityInput">
-                <input type="button" value="Submit" id="QuantitySubmitBtn">
-                <p id="StatusOfQuantity"></p>
+                <input type="text" placeholder="Screen Name" id="FollowerInput">
+                <input type="button" value="Submit" id="FollowerSubmitBtn">
+                <p id="StatusOfFollower"></p>
             </div>
         </div> 
 

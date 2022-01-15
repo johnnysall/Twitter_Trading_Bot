@@ -1,3 +1,4 @@
+// Get the Tweets gathered within python and display them in the table
 async function getTweets() {
     let TweetArray = await eel.FindTweetsPY()()
     TweetList.innerHTML = "";
@@ -19,6 +20,8 @@ async function getTweets() {
 }
 
 
+
+// Get the Orders gathered within python and display them in the table
 async function getOrders() {
   let OrderArray = await eel.FindOrdersPY()()
 
@@ -35,6 +38,10 @@ async function getOrders() {
   }
 }
 
+
+
+// Functions to show Portfolio/ Account Data
+// Get Account Data from python and display the data
 async function GetPortfolioPL() {
   let PortfolioPL = await eel.GetAccountData()()
   
@@ -45,6 +52,7 @@ async function GetPortfolioPL() {
   document.getElementById("Equity").innerText = PortfolioPL[4];
 }
 
+// Function to get Portfolio Data e.g. what stocks and quantity of each
 async function getPortfolio() {
   let PortfolioArray = await eel.GetPortfolioPY()()
   
@@ -64,15 +72,16 @@ async function getPortfolio() {
         var Buy = "buy";
 
         var cell = row.insertCell(x);
-        cell.innerHTML = '<input type="button" id="Buybtn" value="Buy" onclick="ModalStockQuantity(\''+Buy+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
+        cell.innerHTML = '<input type="button" id="Buybtn" value="Buy" onclick="PortfolioModalStockQuantity(\''+Buy+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
         
         var cell = row.insertCell(x);
-        cell.innerHTML = '<input type="button" id="Sellbtn" value="Sell" onclick="ModalStockQuantity(\''+Sell+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
+        cell.innerHTML = '<input type="button" id="Sellbtn" value="Sell" onclick="PortfolioModalStockQuantity(\''+Sell+'\', \''+PortfolioArray[i][0]+'\', \''+PortfolioArray[i][1]+'\');">';
       };
     };
   };
 };
 
+// Function to send a request to Python to buy a certain stock
 eel.expose(BuyStocks);
 async function BuyStocks(Side, Stock) {
   var Stock = document.getElementById("StockToBuy").value;
@@ -83,7 +92,8 @@ async function BuyStocks(Side, Stock) {
   document.getElementById("Status").innerHTML = Status;
 }
 
-function ModalStockQuantity(Side, Stock, CurrentAmount){
+// Display modal where user can Sell/ Buy stocks
+function PortfolioModalStockQuantity(Side, Stock, CurrentAmount){
   document.getElementById("PortfolioModal").style.display = "block";
   document.getElementById("QuantityInput").value = null;
 
@@ -91,6 +101,7 @@ function ModalStockQuantity(Side, Stock, CurrentAmount){
   document.getElementById("QuantitySubmitBtn").onclick = function() {EditStockQuantity(Side, Stock, CurrentAmount)};
 }
 
+// Function to buy or sell stock within Portfolio
 async function EditStockQuantity(Side, Stock, CurrentAmount, OrderAmount){
   OrderAmount = parseInt(document.getElementById("QuantityInput").value);
   CurrentAmountInt = parseInt(CurrentAmount);
@@ -133,6 +144,7 @@ function closeNav() {
 
 
 // Start Twitter Stream within Python ---------------------------
+// General function to get Followers, which then returns array of follows
 eel.expose(GetFollowers);
 function GetFollowers(Direction) {
   const TwitterNameList = [];
@@ -163,6 +175,10 @@ function StartTwitterStream() {
   eel.StartTwitterStreamThread(Followers)();
 }
 
+
+
+// Follower Function Section, inc Add/Delete Followers and display ------------------------------------------------
+// Display Single Follower - Initiated when new user follows new user
 eel.expose(DisplayFollower);
 function DisplayFollower(Follower) {
   var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
@@ -175,6 +191,7 @@ function DisplayFollower(Follower) {
   cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
 }
 
+// Display all Followers, called when page first loads up
 eel.expose(DisplayFollowers);
 function DisplayFollowers(Followers) {
   var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
@@ -191,6 +208,7 @@ function DisplayFollowers(Followers) {
   }
 }
 
+// Delete Follower, Called when user unfollows a user
 function DeleteFollower(Follower) {
   var row = document.getElementById(Follower);
   row.parentNode.removeChild(row);
@@ -198,7 +216,19 @@ function DeleteFollower(Follower) {
   eel.DeleteFollower(Follower)();
 }
 
-function AddFollower(Follower) {
+// Display modal where user can Follow new user
+function FollowerModalStockQuantity(){
+  document.getElementById("FollowerModal").style.display = "block";
+  document.getElementById("FollowerInput").value = null;
+
+  document.getElementById("TextToShow").innerText = "Who would you like to Follow: ";
+  document.getElementById("FollowerSubmitBtn").onclick = function() {AddFollower()};
+}
+
+// Add Follower, called when user follows new user
+function AddFollower() {
+  var Follower = document.getElementById("FollowerInput").value;
+
   var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
   var row = table.insertRow();
 
@@ -211,6 +241,10 @@ function AddFollower(Follower) {
   eel.AddFollower(Follower)();
 }
 
+
+
+// Bought Function Section, Section to show what stocks have been bought becuase of what tweets
+// AddRow for when User follows new user which then needs to be added to the table
 function AddRow(Username, Tweet, StockBought, i) {
   var newTweetForm = document.createElement("LI");
   newTweetForm.id = "form"+i;
@@ -218,7 +252,7 @@ function AddRow(Username, Tweet, StockBought, i) {
 
   var newUsername = document.createElement("a");
   newUsername.id = "form"+"Username";
-  newUsername.innerHTML = "@" + Username + "Said";
+  newUsername.innerHTML = "@" + Username + " Said:";
   document.getElementById("form"+i).appendChild(newUsername);
 
   var newTweet = document.createElement("a");
@@ -232,6 +266,8 @@ function AddRow(Username, Tweet, StockBought, i) {
   document.getElementById("form"+i).appendChild(newStockBought);
 }
 
+// Update bought tweets is used to find the last 3 lines of the text document,
+// Uses these lines to call AddRow function so that the lines are added to table
 eel.expose(UpdateBoughtTweets);
 function UpdateBoughtTweets() {
   fetch('../StockTweetsBought.txt')
@@ -247,6 +283,8 @@ function UpdateBoughtTweets() {
   })
 };
 
+// ReadTextFile is a function to simply return each line of the text file as an array for use in other functions
+// And is used to add each user to the table 
 eel.expose(ReadTextFile);
 function ReadTextFile() {
   fetch('../StockTweetsBought.txt')
@@ -268,14 +306,12 @@ function ReadTextFile() {
 
 
 
-// Modal JS -----------------------------------------------------
-// Get the modal
-var modal = document.getElementById("myModal");
-
+// Modal JS ----------------------------------------------------------------------------
+// Portfolio Modal ---------------------------------------------------------------------
 // When the user clicks on <span> (x), close the modal
-function CloseModalFunc() {
-  document.getElementById("PortfolioModal").style.display = "none";
-  document.getElementById("StatusOfQuantity").innerText = "";
+function CloseModalFunc(ID, StatusID) {
+  document.getElementById(ID).style.display = "none";
+  document.getElementById(StatusID).innerText = "";
 }
 
 

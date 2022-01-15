@@ -16,12 +16,12 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 import re
 
-#nltk.download()
+#nltk.download('vader_lexicon')
 
 # Configuring Eel ----------------------------------
 # Comment out first one when on PC, Comment Second when on Laptop
-#eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+#eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
 
 # Configuring Alpaca API ---------------------------
 Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
@@ -71,7 +71,7 @@ def FindOrdersPY():
 # Market Order sent to Alpaca API (Side = Buy/ Short/ Sell)
 @eel.expose
 def Alpaca_Order(symbol, qty, side):
-    print(symbol, qty, side)
+    return("YEP")
     # try:
     #     Alpaca_API.submit_order(
     #         symbol=symbol.upper(),
