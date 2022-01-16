@@ -170,9 +170,15 @@ function GetFollowers(Direction) {
   }
 }
 
+// Start Twitter Stream start of program
 function StartTwitterStream() {
   var Followers = GetFollowers("StartTwitterStream");
-  eel.StartTwitterStreamThread(Followers)();
+  eel.StartTwitterStream(Followers)();
+}
+
+function StartNewTwitterStream(NewFollower) {
+  console.log(NewFollower);
+  eel.NewFilters(NewFollower)();
 }
 
 
@@ -225,12 +231,17 @@ function FollowerModalStockQuantity(){
   document.getElementById("FollowerSubmitBtn").onclick = function() {AddFollower()};
 }
 
-// Add Follower, called when user follows new user
 function AddFollower() {
   var Follower = document.getElementById("FollowerInput").value;
+  eel.AddFollower(Follower)();
+}
 
+// Add Follower, called when user follows new user
+eel.expose(AddFollowerToTable);
+function AddFollowerToTable(Follower) {
   var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
   var row = table.insertRow();
+  row.id = Follower;
 
   var cell = row.insertCell(0);
   cell.innerHTML = Follower;
@@ -238,7 +249,13 @@ function AddFollower() {
   var cell = row.insertCell(1);
   cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
 
-  eel.AddFollower(Follower)();
+  AddFollowerStatus("You're now Following: " + Follower)
+}
+
+eel.expose(AddFollowerStatus);
+function AddFollowerStatus(Status) {
+  document.getElementById("StatusOfFollower").innerText = Status;
+  StartNewTwitterStream()();
 }
 
 

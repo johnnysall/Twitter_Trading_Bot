@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from os import stat
 import os
 import tkinter
@@ -32,11 +33,24 @@ Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
 Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
 Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
 
+
+
 # Function to add Tweets to list ------------------
 @eel.expose
 def FindTweetsPY():
-    # Find Tweets by "userID" ----------------------------
-    userID = "MrZackMorris"
+    xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
+    FollowingList = []
+
+    with open(xpath, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                FollowingList.append(line.strip("\n"))
+                print(line.strip("\n"))
+
+    print("FollowingList: ", FollowingList)
+
+    # Find Tweets by "userID"
+    userID = "(MrZackMorris OR InvestmentsFly)"
     tweets = Twitter_API.user_timeline(screen_name=userID, 
     # 200 is the maximum allowed count
     count=200,
@@ -49,7 +63,10 @@ def FindTweetsPY():
     for info in tweets[:25]:
         TweetList.append("@" + info.user.screen_name + " Said:")
         TweetList.append(info.full_text)
+        print(info.full_text)
     return TweetList
+
+
 
 # Function to Add all the Orders to the list -------------
 @eel.expose
@@ -68,6 +85,7 @@ def FindOrdersPY():
     return OrderList
 
 
+
 # Market Order sent to Alpaca API (Side = Buy/ Short/ Sell)
 @eel.expose
 def Alpaca_Order(symbol, qty, side):
@@ -84,6 +102,7 @@ def Alpaca_Order(symbol, qty, side):
     # except:
     #     Status = "Invalid details"
     # return Status
+
 
 
 # Pull Portfolio from Alpaca API -----------------------
@@ -123,17 +142,20 @@ def GetAccountData():
     return AccountData
 
 
+
 # Alpaca API Stream -------------------------------------------
 @eel.expose
 async def trade_callback(t):
     print('trade', t)
-    
+
+
 
 # Initiate Class Instance
 stream = Stream(Alpaca_API_Key,
                 Alpaca_Secret_Key,
                 base_url=('https://paper-api.alpaca.markets'),
                 data_feed='iex')  # <- replace to SIP if you have PRO subscription
+
 
 
 @eel.expose
@@ -165,24 +187,25 @@ def AddFollower(User):
 
         with open(xpath, "r") as f:
             lines = f.readlines()
+            x = 0
             for line in lines:
                 if line.strip("\n") == User:
                     x = 1
-                    print("You already Follow Them!")
+                    eel.AddFollowerStatus("You already Follow Them!")
                     break
             if x != 1:
                 with open(xpath, 'a') as f:
                     f.write(User + "\n")
                     f.close()
         
-                print("Added", User)
-                eel.DisplayFollower(User)
+                eel.AddFollowerToTable(User)
     except:
-        print(User, " Doesnt Exist")
+        eel.AddFollowerStatus(User + " Doesn't Exist")
 
 
-# Twitter (Tweepy) API Stream -------------------------------------------
-def GetUserID(TwitterNameList):
+# Twitter (Tweepy) API Stream ------------------------------------------
+# Function to get UserIDs
+def GetUserIDs(TwitterNameList):
     TwitterIDList = []
     for name in TwitterNameList:
         # Fetching the user
@@ -194,54 +217,66 @@ def GetUserID(TwitterNameList):
 
 # Subclass Stream to print IDs of Tweets received
 class TweetStreamer(tweepy.Stream):
-    global sia
-    sia = SentimentIntensityAnalyzer()
+    def TweetValidation(self, status):
+        if hasattr(status, 'retweeted_status'):
+            print("RT")
+            return False
+        elif status.in_reply_to_status_id != None:
+            print("Reply")
+            return False
+        elif status.in_reply_to_screen_name != None:
+            print("Reply")
+            return False
+        elif status.in_reply_to_user_id != None:
+            print("Reply")
+            return False
+        else:
+            return True
 
     def on_status(self, status):     
-        if status.in_reply_to_status_id == None and status.in_reply_to_screen_name == None and status.is_quote_status == False and status.retweeted == False:
+        if self.TweetValidation(status) == True:
+            print(status.text)
             words = status.text.upper().split()
             result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
 
-            try:
-                if status.retweeted_status.id != None:
-                    print("Was a Retweet")
-            
-            except:
-                # Check Theres only one stock inluded in the tweet in question
-                if len(result) == 1:
-                    AmountNeg = sia.polarity_scores(status.text)["neg"]
-                    AmountPos = sia.polarity_scores(status.text)["pos"]
+            if len(result) == 1:
+                sia = SentimentIntensityAnalyzer()
+                AmountNeg = sia.polarity_scores(status.text)["neg"]
+                AmountPos = sia.polarity_scores(status.text)["pos"]
 
-                    # Only continue if vader score determines theres no negativity in tweet
-                    if AmountNeg == 0:
-                        # Only continue if vader positivity score is above certain amount
-                        if AmountPos > 0.3:
-                            # Create directory path to Text file which includes data
-                            xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
+                # Only continue if vader score determines theres no negativity in tweet
+                if AmountNeg == 0:
+                    # Only continue if vader positivity score is above certain amount
+                    if AmountPos > 0.3:
+                        # Create directory path to Text file which includes data
+                        xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
 
-                            TextToAdd = []
-                            TextToAdd.append(status.user.screen_name + "\n")
-                            TextToAdd.append(status.text + "\n")
-                            TextToAdd.append(result[0] + "\n")
+                        TextToAdd = []
+                        TextToAdd.append(status.user.screen_name + "\n")
+                        TextToAdd.append(status.text + "\n")
+                        TextToAdd.append(result[0] + "\n")
 
-                            for item in TextToAdd:
-                                with open(xpath, 'a') as f:
-                                    f.write(item)
-                                    f.close()
+                        for item in TextToAdd:
+                            with open(xpath, 'a') as f:
+                                f.write(item)
+                                f.close()
 
-                            # Call Javascript Function which refreshes the element to display Text from file
-                            eel.UpdateBoughtTweets() 
+                        # Call Javascript Function which refreshes the element to display Text from file
+                        eel.UpdateBoughtTweets() 
 
-                            # Call buy function to buy the Stock Recommended
-                            Alpaca_Order(result[0], 1, "buy")
-                else:
-                    print("No Stock found")
-                    print(status)
-        else:
-            print("Was a reply/ RT")
+                        # Call buy function to buy the Stock Recommended
+                        Alpaca_Order(result[0], 1, "buy")
+            else:
+                print("No Stock found")
+                print(status)
+    
+    @eel.expose
+    def NewFilters(self, Follower):
+        print("New Follower: ", Follower)
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
+    print("TwitterNameList = ", TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 
@@ -250,15 +285,19 @@ def StartTwitterStream(TwitterNameList):
     Twitter_Access_Token_Secret)
 
     # Filter realtime Tweets by keyword
-    Streamer.filter(follow=GetUserID(TwitterNameList))
+    Streamer.filter(follow=GetUserIDs(TwitterNameList), threaded=True)
+
+# @eel.expose
+# def StartTwitterStreamThread(TwitterNameList):
+#     t2 = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,))
+#     t2.start() 
+
+
 
 def StartApp():
     eel.start('Index.html')
 
-@eel.expose
-def StartTwitterStreamThread(TwitterNameList):
-    t2 = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,))
-    t2.start() 
+
 
 #t1 = threading.Thread(target = StartWebSocket, args=())
 #t1.start() 
@@ -269,3 +308,51 @@ def StartTwitterStreamThread(TwitterNameList):
 StartApp()
 #t1.join()
 #t2.join()
+
+
+
+
+
+#======================================   Junk   =========================================================
+
+        # if status.in_reply_to_status_id == None and status.in_reply_to_screen_name == None and status.is_quote_status == False and status.retweeted == False:
+        #     words = status.text.upper().split()
+        #     result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+
+        #     try:
+        #         if status.retweeted_status.id != None:
+        #             print("Was a Retweet")
+            
+        #     except:
+        #         # Check Theres only one stock inluded in the tweet in question
+        #         if len(result) == 1:
+        #             AmountNeg = sia.polarity_scores(status.text)["neg"]
+        #             AmountPos = sia.polarity_scores(status.text)["pos"]
+
+        #             # Only continue if vader score determines theres no negativity in tweet
+        #             if AmountNeg == 0:
+        #                 # Only continue if vader positivity score is above certain amount
+        #                 if AmountPos > 0.3:
+        #                     # Create directory path to Text file which includes data
+        #                     xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
+
+        #                     TextToAdd = []
+        #                     TextToAdd.append(status.user.screen_name + "\n")
+        #                     TextToAdd.append(status.text + "\n")
+        #                     TextToAdd.append(result[0] + "\n")
+
+        #                     for item in TextToAdd:
+        #                         with open(xpath, 'a') as f:
+        #                             f.write(item)
+        #                             f.close()
+
+        #                     # Call Javascript Function which refreshes the element to display Text from file
+        #                     eel.UpdateBoughtTweets() 
+
+        #                     # Call buy function to buy the Stock Recommended
+        #                     Alpaca_Order(result[0], 1, "buy")
+        #         else:
+        #             print("No Stock found")
+        #             print(status)
+        # else:
+        #     print("Was a reply/ RT")

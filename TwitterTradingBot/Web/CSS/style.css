@@ -373,19 +373,19 @@ ul {
   display: block;
 }
 
-#QuantityInput {
+.ModalTextInput {
   margin: 10px auto;
   display: block;
   height: 30px;
   padding-left: 10px;
 }
 
-#QuantitySubmitBtn {
+.ModalSubmitBtn {
   margin: 10px auto;
   display: block;
 }
 
-#StatusOfQuantity {
+.ModalStatusText {
   color: #cccccc;
   margin: 10px auto;
   display: block;
