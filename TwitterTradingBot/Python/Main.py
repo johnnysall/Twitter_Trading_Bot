@@ -37,34 +37,48 @@ Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
 
 # Function to add Tweets to list ------------------
 @eel.expose
-def FindTweetsPY():
-    xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
-    FollowingList = []
-
-    with open(xpath, "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                FollowingList.append(line.strip("\n"))
-                print(line.strip("\n"))
-
-    print("FollowingList: ", FollowingList)
-
+def FindTweetsPY(User):
     # Find Tweets by "userID"
-    userID = "(MrZackMorris OR InvestmentsFly)"
+    userID = User
     tweets = Twitter_API.user_timeline(screen_name=userID, 
     # 200 is the maximum allowed count
     count=200,
     include_rts = False,
+    exclude_replies = True,
     # Necessary to keep full_text 
     # otherwise only the first 140 words are extracted
     tweet_mode = 'extended')
 
     TweetList = []
-    for info in tweets[:25]:
-        TweetList.append("@" + info.user.screen_name + " Said:")
+    for info in tweets[:15]:
         TweetList.append(info.full_text)
-        print(info.full_text)
+        Date = str(info.created_at.date())
+        TweetList.append(Date)
     return TweetList
+
+
+@eel.expose
+def GetUsersBio(Users):
+    UsersData = []
+    for User in Users:
+        UserInfo = Twitter_API.get_user(screen_name=User)
+        UsersData.append(UserInfo.description)
+    return UsersData
+
+@eel.expose
+def GetUsersData(User):
+    UserInfo = Twitter_API.get_user(screen_name=User)
+    UserInfoList = []
+    UserInfoList.append(UserInfo.followers_count)
+    UserInfoList.append(UserInfo.friends_count)
+    
+    GetUserBio(User, UserInfoList)
+
+@eel.expose
+def GetUserBio(User, UserData):
+    UserInfo = Twitter_API.get_user(screen_name=User)
+
+    eel.FollowersModal(User, UserData, UserInfo.description)
 
 
 
@@ -274,7 +288,6 @@ class TweetStreamer(tweepy.Stream):
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
-    print("TwitterNameList = ", TwitterNameList)
     # Initialize instance of the subclass
     Streamer = TweetStreamer(
     Twitter_API_Key, 

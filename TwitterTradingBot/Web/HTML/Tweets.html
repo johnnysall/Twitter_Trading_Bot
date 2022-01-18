@@ -16,7 +16,7 @@
         <a href='Portfolio.html'>Portfolio</a>
         <a href='BuyStocks.html'>Market Orders</a>
         <a href='History.html'>History</a>
-        <a href='Tweets.html' class='active-page'>Tweets</a>
+        <a href='Tweets.html' class='active-page'>Following</a>
         <a href='Automatic.html'>Automatic Bot</a>
     </div>
       
@@ -24,27 +24,33 @@
     <div id="main">
         <div id="TopLine">
             <span id="OpenMenu" onclick="openNav()">&#9776;</span>
-            <h1 id="Title">Tweets</h1>
+            <h1 id="Title">Following</h1>
         </div>
 
         <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="FollowerModalStockQuantity();"/>
         <!-- Table for the Followers to go into -->
         <div id="FollowerSection">
-            <table id="FollowerTBL" class="styled-table">
-                <tbody>
-                </tbody>
-            </table>
-        </div> <
+            <ul id="FollowerList"></ul>
+        </div>
 
         <div id="FollowerTweetsModal" class="modal">
             <div class="modal-content" id="TweetsForUser">
                 <span id="CloseModal" class="closebtn" onclick="CloseModalFunc('FollowerTweetsModal', 'Empty');">&times;</span>
-                <p id="UserName"></p>
-                <p id="Followers">Followers</p>
-                <p id="Following">Following</p>
-                <p id="Bio">Bio</p>
+                <div class="FollowerInfo">
+                    <div id="UserContainer">
+                        <p id="FollowerTweetsModalUserName"></p>
+                    </div>
 
-                <input id="Refreshbtn" type="button" value="Refresh" onclick="getTweets();"/>
+                    <div id="FollowingDataContainer">
+                        <p id="FollowerTweetsModalFollowers">Followers</p>
+                        <p id="FollowerTweetsModalFollowing">Following</p>
+                    </div>
+                    
+                    <div id="BioContainer">
+                        <p id="FollowerTweetsModalBio">Bio</p>
+                    </div>
+                    
+                </div>
                 
                 <!-- List for the tweets to go into -->
                 <ul id="TweetList"></ul>
@@ -68,7 +74,6 @@
 
     <script type="text/javascript" src="/eel.js"></script>
     <script type="text/javascript" src="../Javascript/Main.js"></script>  
-    <script>window.onload = getTweets();</script>
     <script>window.onload = GetFollowers("DisplayFollowers");</script>
 </body>
 </html>

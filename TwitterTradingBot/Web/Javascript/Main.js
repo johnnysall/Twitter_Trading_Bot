@@ -1,21 +1,23 @@
 // Get the Tweets gathered within python and display them in the table
-async function getTweets() {
-    let TweetArray = await eel.FindTweetsPY()()
+async function getTweets(User) {
+    let TweetArray = await eel.FindTweetsPY(User)()
     TweetList.innerHTML = "";
     for (var i=0; i<TweetArray.length; i+=2) {
         var newTweetForm = document.createElement("LI");
         newTweetForm.id = "form"+i;
         document.getElementById("TweetList").appendChild(newTweetForm);
 
-        var newTweetLinkUsername = document.createElement("a");
-        newTweetLinkUsername.id = "form"+"Username";
-        newTweetLinkUsername.innerHTML = TweetArray[i];
-        document.getElementById("form"+i).appendChild(newTweetLinkUsername);
-
         var newTweetLinkTweet = document.createElement("a");
-        newTweetLinkTweet.id = "form"+"Tweet";
-        newTweetLinkTweet.innerHTML = TweetArray[i+1];
+        newTweetLinkTweet.id = "formTweet";
+        newTweetLinkTweet.classList.add("GeneralText");
+        newTweetLinkTweet.innerHTML = TweetArray[i];
         document.getElementById("form"+i).appendChild(newTweetLinkTweet);
+
+        var newTweetDateCreated = document.createElement("a");
+        newTweetDateCreated.id = "formDateCreated";
+        newTweetDateCreated.classList.add("GeneralText");
+        newTweetDateCreated.innerHTML = TweetArray[i+1];
+        document.getElementById("form"+i).appendChild(newTweetDateCreated);
     }
 }
 
@@ -194,39 +196,63 @@ function DisplayFollower(Follower) {
   cell.innerHTML = Follower;
 
   var cell = row.insertCell(1);
-  cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
+  cell.innerHTML = '<input type="button" id="UnFollowbtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
 }
 
 // Display all Followers, called when page first loads up
 eel.expose(DisplayFollowers);
-function DisplayFollowers(Followers) {
-  var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
+async function DisplayFollowers(Followers) {
+  var UsersBio = await eel.GetUsersBio(Followers)();
 
   for (var i=0; i<Followers.length; i++) {
-    var row = table.insertRow();
-    //row.id = Followers[i];
-    doument.innerHTML = '<tr id="HellO"></tr>'
-    //row.innerHTML = '<tr id="'+Followers[i]+'" onclick="FollowersModal(\''+Followers[i]+'\');"></tr>';
+    const Follower = Followers[i];
 
-    var cell = row.insertCell(0);
-    cell.innerHTML = '<p class="OnclickPTag" onclick="FollowersModal(\''+Followers[i]+'\');">'+Followers[i]+'</p>';
+    var FollowerListRow = document.createElement("LI");
+    FollowerListRow.classList.add("form"+i);
+    FollowerListRow.id = "Followerform"+i;
+    document.getElementById("FollowerList").appendChild(FollowerListRow);
 
-    //cell.innerHTML = '<p onclick="FollowersModal(\''+Followers[i]+'\')>'+Followers[i]+'</p>';
+    var FollowerUsername = document.createElement("a");
+    FollowerUsername.classList.add("UsernameText");
+    FollowerUsername.id = "FollowerformUsername";
+    FollowerUsername.innerHTML = "@" + Followers[i];
+    FollowerUsername.addEventListener('click', function() { GetFollowerData(Follower) });
+    document.getElementById("Followerform"+i).appendChild(FollowerUsername);
 
-    var cell = row.insertCell(1);
-    cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Followers[i]+'\');">';
+    var UnfollowerButton = document.createElement("a");
+    UnfollowerButton.id = "FollowerformUnfollow";
+    UnfollowerButton.innerHTML = '<input type="button" id="UnFollowbtn" value="Unfollow" onclick="DeleteFollower(\''+Followers[i]+'\', \''+i+'\');">';
+    document.getElementById("Followerform"+i).appendChild(UnfollowerButton);
+
+    var FollowerBio = document.createElement("a");
+    FollowerBio.classList.add("GeneralText");
+    FollowerBio.id = "FollowerformBio";
+    FollowerBio.innerHTML = UsersBio[i];
+    FollowerBio.addEventListener('click', function() { GetFollowerData(Follower) });
+    document.getElementById("Followerform"+i).appendChild(FollowerBio);   
   }
 }
 
-function FollowersModal(User) {
-  document.getElementById("FollowerTweetsModal").style.display = "block";
+function GetFollowerData(User) {
+  eel.GetUsersData(User)();
+}
 
-  document.getElementById("UserName").innerText = User;
+eel.expose(FollowersModal);
+function FollowersModal(User, UserData, UserBio) {
+  document.getElementById("FollowerTweetsModal").style.display = "block";
+  document.getElementById("FollowerTweetsModalUserName").innerText = User;
+  document.getElementById("FollowerTweetsModalFollowers").innerText = "Followers: " + UserData[0];
+  document.getElementById("FollowerTweetsModalFollowing").innerText = "Following: " + UserData[1];
+  document.getElementById("FollowerTweetsModalBio").innerText = UserBio;
+  document.getElementById("TweetList").innerHTML = "";
+
+  getTweets(User);
 }
 
 // Delete Follower, Called when user unfollows a user
-function DeleteFollower(Follower) {
-  var row = document.getElementById(Follower);
+function DeleteFollower(Follower, i) {
+  console.log(Follower);
+  var row = document.getElementById("Followerform"+i);
   row.parentNode.removeChild(row);
 
   eel.DeleteFollower(Follower)();
@@ -272,25 +298,29 @@ function AddFollowerStatus(Status) {
 
 // Bought Function Section, Section to show what stocks have been bought becuase of what tweets
 // AddRow for when User follows new user which then needs to be added to the table
-function AddRow(Username, Tweet, StockBought, i) {
+function AddRowToAutomatedBotList(Username, Tweet, StockBought, i) {
   var newTweetForm = document.createElement("LI");
-  newTweetForm.id = "form"+i;
+  newTweetForm.classList.add("form"+i);
+  newTweetForm.id = "NewTweetform"+i;
   document.getElementById("BoughtTweetList").appendChild(newTweetForm);
 
   var newUsername = document.createElement("a");
-  newUsername.id = "form"+"Username";
+  newUsername.classList.add("UsernameText");
+  newUsername.id = "NewTweetform"+"Username";
   newUsername.innerHTML = "@" + Username + " Said:";
-  document.getElementById("form"+i).appendChild(newUsername);
+  document.getElementById("NewTweetform"+i).appendChild(newUsername);
 
   var newTweet = document.createElement("a");
-  newTweet.id = "form"+"Tweet";
+  newTweet.classList.add("GeneralText");
+  newTweet.id = "NewTweetform"+"Tweet";
   newTweet.innerHTML = Tweet;
-  document.getElementById("form"+i).appendChild(newTweet);
+  document.getElementById("NewTweetform"+i).appendChild(newTweet);
 
   var newStockBought = document.createElement("a");
-  newStockBought.id = "form"+"StockBought";
+  newStockBought.classList.add("GeneralText");
+  newStockBought.id = "NewTweetform"+"StockBought";
   newStockBought.innerHTML = "Bought: " + StockBought;
-  document.getElementById("form"+i).appendChild(newStockBought);
+  document.getElementById("NewTweetform"+i).appendChild(newStockBought);
 }
 
 // Update bought tweets is used to find the last 3 lines of the text document,
@@ -307,7 +337,7 @@ function UpdateBoughtTweets() {
       var StockBought = lines[(lines.length)-2];
       var index = (((lines.length)-1)/3);
 
-      AddRow(Username, Tweet, StockBought, index);
+      AddRowToAutomatedBotList(Username, Tweet, StockBought, index);
     })
   }
 };
@@ -328,7 +358,7 @@ function ReadTextFile() {
       var Tweet = lines[(lines.length)-index-3];
       var StockBought = lines[(lines.length)-index-2];
       
-      AddRow(Username, Tweet, StockBought, i);
+      AddRowToAutomatedBotList(Username, Tweet, StockBought, i);
     }
   })
 };
