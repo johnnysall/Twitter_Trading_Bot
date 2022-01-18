@@ -204,14 +204,24 @@ function DisplayFollowers(Followers) {
 
   for (var i=0; i<Followers.length; i++) {
     var row = table.insertRow();
-    row.id = Followers[i];
+    //row.id = Followers[i];
+    doument.innerHTML = '<tr id="HellO"></tr>'
+    //row.innerHTML = '<tr id="'+Followers[i]+'" onclick="FollowersModal(\''+Followers[i]+'\');"></tr>';
 
     var cell = row.insertCell(0);
-    cell.innerHTML = Followers[i];
+    cell.innerHTML = '<p class="OnclickPTag" onclick="FollowersModal(\''+Followers[i]+'\');">'+Followers[i]+'</p>';
+
+    //cell.innerHTML = '<p onclick="FollowersModal(\''+Followers[i]+'\')>'+Followers[i]+'</p>';
 
     var cell = row.insertCell(1);
     cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Followers[i]+'\');">';
   }
+}
+
+function FollowersModal(User) {
+  document.getElementById("FollowerTweetsModal").style.display = "block";
+
+  document.getElementById("UserName").innerText = User;
 }
 
 // Delete Follower, Called when user unfollows a user
@@ -287,17 +297,19 @@ function AddRow(Username, Tweet, StockBought, i) {
 // Uses these lines to call AddRow function so that the lines are added to table
 eel.expose(UpdateBoughtTweets);
 function UpdateBoughtTweets() {
-  fetch('../StockTweetsBought.txt')
-  .then(response => response.text())
-  .then((data) => {
-    var lines=data.split(/\r\n/);
-    var Username = lines[(lines.length)-4];
-    var Tweet = lines[(lines.length)-3];
-    var StockBought = lines[(lines.length)-2];
-    var index = (((lines.length)-1)/3);
+  if (document.URL.includes("Automatic.html")){
+    fetch('../StockTweetsBought.txt')
+    .then(response => response.text())
+    .then((data) => {
+      var lines=data.split(/\r\n/);
+      var Username = lines[(lines.length)-4];
+      var Tweet = lines[(lines.length)-3];
+      var StockBought = lines[(lines.length)-2];
+      var index = (((lines.length)-1)/3);
 
-    AddRow(Username, Tweet, StockBought, index);
-  })
+      AddRow(Username, Tweet, StockBought, index);
+    })
+  }
 };
 
 // ReadTextFile is a function to simply return each line of the text file as an array for use in other functions
@@ -327,8 +339,11 @@ function ReadTextFile() {
 // Portfolio Modal ---------------------------------------------------------------------
 // When the user clicks on <span> (x), close the modal
 function CloseModalFunc(ID, StatusID) {
+  if (StatusID != "Empty") {
+    document.getElementById(StatusID).innerText = "";
+  }
   document.getElementById(ID).style.display = "none";
-  document.getElementById(StatusID).innerText = "";
+  
 }
 
 

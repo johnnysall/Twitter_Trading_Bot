@@ -261,11 +261,9 @@ class TweetStreamer(tweepy.Stream):
                                 f.write(item)
                                 f.close()
 
-                        # Call Javascript Function which refreshes the element to display Text from file
-                        eel.UpdateBoughtTweets() 
-
                         # Call buy function to buy the Stock Recommended
-                        Alpaca_Order(result[0], 1, "buy")
+                        print(Alpaca_Order(result[0], 1, "buy"))
+                        
             else:
                 print("No Stock found")
                 print(status)

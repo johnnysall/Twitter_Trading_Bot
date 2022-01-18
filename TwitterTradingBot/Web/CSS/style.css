@@ -339,6 +339,8 @@ ul {
 #BoughtTweetList li:hover {
   background: rgb(27, 27, 27);
   border-bottom: 1px solid rgb(0, 195, 255);
+  transform: scaleY(1.5);
+  transform-origin: bottom;
 }
 
 
@@ -365,6 +367,10 @@ ul {
   padding: 20px;
   border: 1px solid rgb(0, 195, 255) !important;
   width: 25%; /* Could be more or less, depending on screen size */
+}
+
+.modal-content#TweetsForUser {
+  width: 80%;
 }
 
 #TextToShow {

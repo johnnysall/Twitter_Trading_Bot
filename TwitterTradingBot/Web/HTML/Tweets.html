@@ -27,29 +27,30 @@
             <h1 id="Title">Tweets</h1>
         </div>
 
-        <div id="LeftSide" class="WidthContainer">
-            <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="FollowerModalStockQuantity();"/>
-            <!-- Table for the Followers to go into -->
-            <div id="FollowerSection">
-                <table id="FollowerTBL" class="styled-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Unfollow</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div> 
-        </div>
+        <input id="AddFollowerbtn" type="button" value="Add Follower" onclick="FollowerModalStockQuantity();"/>
+        <!-- Table for the Followers to go into -->
+        <div id="FollowerSection">
+            <table id="FollowerTBL" class="styled-table">
+                <tbody>
+                </tbody>
+            </table>
+        </div> <
 
-        <div id="RightSide" class="WidthContainer">
-            <input id="Refreshbtn" type="button" value="Refresh" onclick="getTweets();"/>
-    
-            <!-- List for the tweets to go into -->
-            <ul id="TweetList"></ul>
+        <div id="FollowerTweetsModal" class="modal">
+            <div class="modal-content" id="TweetsForUser">
+                <span id="CloseModal" class="closebtn" onclick="CloseModalFunc('FollowerTweetsModal', 'Empty');">&times;</span>
+                <p id="UserName"></p>
+                <p id="Followers">Followers</p>
+                <p id="Following">Following</p>
+                <p id="Bio">Bio</p>
+
+                <input id="Refreshbtn" type="button" value="Refresh" onclick="getTweets();"/>
+                
+                <!-- List for the tweets to go into -->
+                <ul id="TweetList"></ul>
+            </div>
         </div>
+            
 
         <!-- The Modal -->
         <div id="FollowerModal" class="modal">
