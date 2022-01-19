@@ -1,8 +1,11 @@
 from dataclasses import asdict
+from difflib import restore
+from email.errors import StartBoundaryNotFoundDefect
 from os import stat
 import os
 import tkinter
 from tkinter import *
+from unicodedata import name
 import tweepy
 import alpaca_trade_api as tradeapi
 from tweepy import auth
@@ -16,22 +19,9 @@ import asyncio
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 import re
-
-#nltk.download('vader_lexicon')
-
-# Configuring Eel ----------------------------------
-# Comment out first one when on PC, Comment Second when on Laptop
-eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-#eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-
-# Configuring Alpaca API ---------------------------
-Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
-Alpaca_Account = Alpaca_API.get_account()
-
-# Configuring Twitter API ---------------------------
-Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
-Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
-Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
+import time
+import gc
+import multiprocessing
 
 
 
@@ -180,6 +170,15 @@ def StartWebSocket():
     stream.run()
 
 
+def GetFollowers():
+    xpath = r"TwitterTradingBot\Web/AccountsToTrack.txt"
+    Followers = []
+    with open(xpath, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            Followers.append(line.strip("\n"))
+
+    return Followers
 
 @eel.expose
 def DeleteFollower(User):
@@ -248,6 +247,9 @@ class TweetStreamer(tweepy.Stream):
             return True
 
     def on_status(self, status):     
+        print(status.text)
+        print(status.user)
+        
         if self.TweetValidation(status) == True:
             print(status.text)
             words = status.text.upper().split()
@@ -281,27 +283,36 @@ class TweetStreamer(tweepy.Stream):
             else:
                 print("No Stock found")
                 print(status)
-    
-    @eel.expose
-    def NewFilters(self, Follower):
-        print("New Follower: ", Follower)
+
+    def on_connect(self):
+        print("Tweepy Stream Listening")
+        print(self.filter)
+
+    def on_disconnect(self):
+        print("Tweepy Stream Closed")
+
+    def on_error(self, status_code):
+        print("Error was: ", status_code)
 
 @eel.expose
 def StartTwitterStream(TwitterNameList):
-    # Initialize instance of the subclass
     Streamer = TweetStreamer(
-    Twitter_API_Key, 
-    Twitter_Secret_API_Key,
-    Twitter_Access_Token, 
-    Twitter_Access_Token_Secret)
+        Twitter_API_Key, 
+        Twitter_Secret_API_Key,
+        Twitter_Access_Token, 
+        Twitter_Access_Token_Secret)
 
+    # Initialize instance of the subclass
     # Filter realtime Tweets by keyword
     Streamer.filter(follow=GetUserIDs(TwitterNameList), threaded=True)
 
 # @eel.expose
 # def StartTwitterStreamThread(TwitterNameList):
-#     t2 = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,))
-#     t2.start() 
+#     TwitterStreamThread = multiprocessing.Process(target = StartTwitterStream, args=(TwitterNameList, "1",))
+#     TwitterStreamThread.start()
+
+#     #TwitterStreamThread = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,), name="t1")
+#     #TwitterStreamThread.start() 
 
 
 
@@ -316,10 +327,31 @@ def StartApp():
 #t2 = threading.Thread(target = StartTwitterStream, args=())
 #t2.start() 
 
-StartApp()
-#t1.join()
-#t2.join()
 
+
+if __name__ == "__main__":  
+    #nltk.download('vader_lexicon')
+
+    # Configuring Eel ----------------------------------
+    # Comment out first one when on PC, Comment Second when on Laptop
+    eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+    #eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+
+    # Configuring Alpaca API ---------------------------
+    Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
+    Alpaca_Account = Alpaca_API.get_account()
+
+    # Configuring Twitter API ---------------------------
+    Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
+    Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
+    Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
+
+
+
+    StartApp()
+    #t1.join()
+    #t2.join()
+    #TwitterStream1.join()
 
 
 
