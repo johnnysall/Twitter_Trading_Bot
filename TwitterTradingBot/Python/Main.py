@@ -6,6 +6,7 @@ import os
 import tkinter
 from tkinter import *
 from unicodedata import name
+from gevent import sleep
 import tweepy
 import alpaca_trade_api as tradeapi
 from tweepy import auth
@@ -22,6 +23,24 @@ import re
 import time
 import gc
 import multiprocessing
+
+
+
+#nltk.download('vader_lexicon')
+
+# Configuring Eel ----------------------------------
+# Comment out first one when on PC, Comment Second when on Laptop
+eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+#eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
+
+# Configuring Alpaca API ---------------------------
+Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
+Alpaca_Account = Alpaca_API.get_account()
+
+# Configuring Twitter API ---------------------------
+Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
+Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
+Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
 
 
 
@@ -210,10 +229,12 @@ def AddFollower(User):
                 with open(xpath, 'a') as f:
                     f.write(User + "\n")
                     f.close()
-        
+
                 eel.AddFollowerToTable(User)
+                StartTwitterStream([User])
     except:
         eel.AddFollowerStatus(User + " Doesn't Exist")
+
 
 
 # Twitter (Tweepy) API Stream ------------------------------------------
@@ -246,47 +267,47 @@ class TweetStreamer(tweepy.Stream):
         else:
             return True
 
-    def on_status(self, status):     
-        print(status.text)
-        print(status.user)
-        
+    def on_status(self, status):
         if self.TweetValidation(status) == True:
-            print(status.text)
-            words = status.text.upper().split()
-            result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+            Followers = GetFollowers()
+            if status.user.screen_name not in Followers:
+                print("You Are not Following: ", status.user.screen_name, "\n")
 
-            if len(result) == 1:
-                sia = SentimentIntensityAnalyzer()
-                AmountNeg = sia.polarity_scores(status.text)["neg"]
-                AmountPos = sia.polarity_scores(status.text)["pos"]
-
-                # Only continue if vader score determines theres no negativity in tweet
-                if AmountNeg == 0:
-                    # Only continue if vader positivity score is above certain amount
-                    if AmountPos > 0.3:
-                        # Create directory path to Text file which includes data
-                        xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
-
-                        TextToAdd = []
-                        TextToAdd.append(status.user.screen_name + "\n")
-                        TextToAdd.append(status.text + "\n")
-                        TextToAdd.append(result[0] + "\n")
-
-                        for item in TextToAdd:
-                            with open(xpath, 'a') as f:
-                                f.write(item)
-                                f.close()
-
-                        # Call buy function to buy the Stock Recommended
-                        print(Alpaca_Order(result[0], 1, "buy"))
-                        
             else:
-                print("No Stock found")
-                print(status)
+                words = status.text.upper().split()
+                result = [word for word in words if len(word) > 1 and word[0]=="$" and word[1:].isalpha()]
+
+                if len(result) == 1:
+                    sia = SentimentIntensityAnalyzer()
+                    AmountNeg = sia.polarity_scores(status.text)["neg"]
+                    AmountPos = sia.polarity_scores(status.text)["pos"]
+
+                    # Only continue if vader score determines theres no negativity in tweet
+                    if AmountNeg == 0:
+                        # Only continue if vader positivity score is above certain amount
+                        if AmountPos > 0.3:
+                            # Create directory path to Text file which includes data
+                            xpath = r"TwitterTradingBot\Web/StockTweetsBought.txt"
+
+                            TextToAdd = []
+                            TextToAdd.append(status.user.screen_name + "\n")
+                            TextToAdd.append(status.text + "\n")
+                            TextToAdd.append(result[0] + "\n")
+
+                            for item in TextToAdd:
+                                with open(xpath, 'a') as f:
+                                    f.write(item)
+                                    f.close()
+
+                            # Call buy function to buy the Stock Recommended
+                            print(Alpaca_Order(result[0], 1, "buy"))
+                            
+                else:
+                    print("No Stock found")
 
     def on_connect(self):
+        self.running = True
         print("Tweepy Stream Listening")
-        print(self.filter)
 
     def on_disconnect(self):
         print("Tweepy Stream Closed")
@@ -295,7 +316,7 @@ class TweetStreamer(tweepy.Stream):
         print("Error was: ", status_code)
 
 @eel.expose
-def StartTwitterStream(TwitterNameList):
+def StartTwitterStream(TwitterNameList):           
     Streamer = TweetStreamer(
         Twitter_API_Key, 
         Twitter_Secret_API_Key,
@@ -306,52 +327,15 @@ def StartTwitterStream(TwitterNameList):
     # Filter realtime Tweets by keyword
     Streamer.filter(follow=GetUserIDs(TwitterNameList), threaded=True)
 
-# @eel.expose
-# def StartTwitterStreamThread(TwitterNameList):
-#     TwitterStreamThread = multiprocessing.Process(target = StartTwitterStream, args=(TwitterNameList, "1",))
-#     TwitterStreamThread.start()
-
-#     #TwitterStreamThread = threading.Thread(target = StartTwitterStream, args=(TwitterNameList,), name="t1")
-#     #TwitterStreamThread.start() 
-
-
-
 def StartApp():
     eel.start('Index.html')
 
 
 
-#t1 = threading.Thread(target = StartWebSocket, args=())
-#t1.start() 
-
-#t2 = threading.Thread(target = StartTwitterStream, args=())
-#t2.start() 
-
-
-
-if __name__ == "__main__":  
-    #nltk.download('vader_lexicon')
-
-    # Configuring Eel ----------------------------------
-    # Comment out first one when on PC, Comment Second when on Laptop
-    eel.init('C:/Users/Johnny Salloway/Documents/Coding/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-    #eel.init('D:/JohnSall/Documents/Uni/GitHub/Twitter_Trading_Bot/TwitterTradingBot/Web', allowed_extensions=['.js', '.html','.css'])
-
-    # Configuring Alpaca API ---------------------------
-    Alpaca_API = tradeapi.REST(Alpaca_API_Key, Alpaca_Secret_Key, Alpaca_Endpoint)
-    Alpaca_Account = Alpaca_API.get_account()
-
-    # Configuring Twitter API ---------------------------
-    Twitter_Auth = tweepy.OAuthHandler(Twitter_API_Key, Twitter_Secret_API_Key)
-    Twitter_Auth.set_access_token(Twitter_Access_Token, Twitter_Access_Token_Secret)
-    Twitter_API = tweepy.API(Twitter_Auth, wait_on_rate_limit=True)
-
-
-
-    StartApp()
-    #t1.join()
-    #t2.join()
-    #TwitterStream1.join()
+StartApp()
+#t1.join()
+#t2.join()
+#TwitterStream1.join()
 
 
 

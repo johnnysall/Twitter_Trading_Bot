@@ -178,11 +178,6 @@ function StartTwitterStream() {
   eel.StartTwitterStream(Followers)();
 }
 
-function StartNewTwitterStream(NewFollower) {
-  console.log(NewFollower);
-  eel.NewFilters(NewFollower)();
-}
-
 
 
 // Follower Function Section, inc Add/Delete Followers and display ------------------------------------------------
@@ -275,23 +270,24 @@ function AddFollower() {
 // Add Follower, called when user follows new user
 eel.expose(AddFollowerToTable);
 function AddFollowerToTable(Follower) {
-  var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
-  var row = table.insertRow();
-  row.id = Follower;
+  // var table = document.getElementById("FollowerTBL").getElementsByTagName('tbody')[0];
+  // var row = table.insertRow();
+  // row.id = Follower;
 
-  var cell = row.insertCell(0);
-  cell.innerHTML = Follower;
+  // var cell = row.insertCell(0);
+  // cell.innerHTML = Follower;
 
-  var cell = row.insertCell(1);
-  cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
+  // var cell = row.insertCell(1);
+  // cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
 
-  AddFollowerStatus("You're now Following: " + Follower)
+  document.getElementById("StatusOfFollower").innerText = ("You're now Following: " + Follower);
+
+  //AddFollowerStatus("You're now Following: " + Follower)
 }
 
 eel.expose(AddFollowerStatus);
 function AddFollowerStatus(Status) {
   document.getElementById("StatusOfFollower").innerText = Status;
-  StartNewTwitterStream()();
 }
 
 
