@@ -280,9 +280,8 @@ function AddFollowerToTable(Follower) {
   // var cell = row.insertCell(1);
   // cell.innerHTML = '<input type="button" id="Buybtn" value="Unfollow" onclick="DeleteFollower(\''+Follower+'\');">';
 
-  document.getElementById("StatusOfFollower").innerText = ("You're now Following: " + Follower);
-
-  //AddFollowerStatus("You're now Following: " + Follower)
+  document.getElementById("StatusOfFollower1").innerText = ("You're now Following: " + Follower);
+  document.getElementById("StatusOfFollower1").innerText = ("For this to take effect please Restart.");
 }
 
 eel.expose(AddFollowerStatus);

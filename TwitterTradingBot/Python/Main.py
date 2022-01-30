@@ -231,7 +231,6 @@ def AddFollower(User):
                     f.close()
 
                 eel.AddFollowerToTable(User)
-                StartTwitterStream([User])
     except:
         eel.AddFollowerStatus(User + " Doesn't Exist")
 
